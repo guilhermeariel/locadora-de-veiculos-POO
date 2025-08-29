@@ -1,4 +1,4 @@
-package model;
+package main.model;
 
 public enum TipoVeiculo {
   ELETRICO(150.0),

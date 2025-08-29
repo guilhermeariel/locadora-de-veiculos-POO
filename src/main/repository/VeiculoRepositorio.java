@@ -1,4 +1,4 @@
-package repository;
+package main.repository;
 
 public class VeiculoRepositorio {
 
