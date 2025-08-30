@@ -1,6 +1,7 @@
 package model;
 
 public class Veiculo {
+
   private String placa;
   private String modelo;
   private TipoVeiculo tipo;
@@ -11,7 +12,19 @@ public class Veiculo {
     this.tipo = tipo;
   }
 
-  public String getPlaca() { return placa; }
-  public String getModelo() { return modelo; }
-  public TipoVeiculo getTipo() { return tipo; }
+  public String getPlaca() {
+    return placa;
+  }
+
+  public String getModelo() {
+    return modelo;
+  }
+
+  public TipoVeiculo getTipo() {
+    return tipo;
+  }
+
+  public String getIdentificador() {
+    return placa;
+  }
 }
