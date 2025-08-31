@@ -2,9 +2,9 @@ package model;
 
 public class TesteAluguel {
     public static void main(String[] args) {
-        Veiculo veiculo1 = new Veiculo("ABC1234", "Toyota", "Corolla", 2020, TipoVeiculo.AUTOMATICO);
-        Veiculo veiculo2 = new Veiculo("XYZ5678", "Honda", "Civic", 2019, TipoVeiculo.MANUAL);
-        Veiculo veiculo3 = new Veiculo("ELE1234", "Tesla", "Model 3", 2021, TipoVeiculo.ELETRICO);
+        Veiculo veiculo1 = new Veiculo("ABC1234", "Toyota Corolla", TipoVeiculo.MEDIO);
+        Veiculo veiculo2 = new Veiculo("XYZ5678", "Honda Civic", TipoVeiculo.MEDIO);
+        Veiculo veiculo3 = new Veiculo("ELE1234", "Tesla Model 3", TipoVeiculo.MEDIO);
 
         Aluguel aluguel1 = new Aluguel(veiculo1, 5);
         Aluguel aluguel2 = new Aluguel(veiculo2, 3);
