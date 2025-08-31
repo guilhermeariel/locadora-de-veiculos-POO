@@ -1,6 +1,6 @@
 package model;
 
-public class PessoaJuridica extends model.cliente.Cliente {
+public class PessoaJuridica extends Cliente {
   private String cnpj;
 
   public PessoaJuridica(String nome, String cnpj) {

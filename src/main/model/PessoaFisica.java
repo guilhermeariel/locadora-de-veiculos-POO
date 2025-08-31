@@ -1,6 +1,6 @@
-package model.cliente;
+package model;
 
-public class PessoaFisica extends model.cliente.Cliente {
+public class PessoaFisica extends Cliente {
   private String cpf;
 
   public PessoaFisica(String nome, String cpf) {

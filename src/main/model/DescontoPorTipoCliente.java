@@ -1,7 +1,5 @@
 package model;
 
-import model.cliente.Cliente;
-
 public class DescontoPorTipoCliente implements DescontoStrategy {
 
   @Override

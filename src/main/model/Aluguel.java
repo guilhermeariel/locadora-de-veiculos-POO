@@ -1,9 +1,5 @@
 package model;
 
-import model.cliente.Cliente;
-import model.DescontoPorTipoCliente;
-import model.DescontoStrategy;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -34,7 +30,7 @@ public class Aluguel {
     return descontoStrategy.aplicarDesconto(cliente, dias, total);
   }
 
-  public int getId() {
+  public int getIdentificador() {
     return id;
   }
 
@@ -44,5 +40,13 @@ public class Aluguel {
 
   public Veiculo getVeiculo() {
     return veiculo;
+  }
+
+  public LocalDateTime getDataFim() {
+    return dataFim;
+  }
+
+  public void setDataFim(LocalDateTime dataFim) {
+    this.dataFim = dataFim;
   }
 }
