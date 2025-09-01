@@ -1,5 +1,5 @@
-package main.model;
+package model;
 
-public class DescontoStrategy {
-
+public interface DescontoStrategy {
+  double aplicarDesconto(Cliente cliente, long dias, double total);
 }
