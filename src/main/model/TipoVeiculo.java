@@ -1,9 +1,9 @@
 package model;
 
 public enum TipoVeiculo {
-  MANUAL(100.0),
-  AUTOMATICO(150.0),
-  ELETRICO(200.0);
+  PEQUENO(100.0),
+  MEDIO(150.0),
+  SUV(200.0);
 
   private final double valorDiaria;
 
