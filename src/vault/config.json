@@ -1,0 +1,13 @@
+{
+  "pix": {
+    "chave": "payment@melocaliza.com",
+    "nome": "MeLoCaliza",
+    "cidade": "Sao Paulo"
+  },
+  "boleto": {
+    "banco": "323",
+    "agencia": "0001",
+    "conta": "00000-0",
+    "cedente": "Loja Exemplo Ltda"
+  }
+}
