@@ -1,15 +1,16 @@
 package model;
 
 public class Veiculo {
-
   private String placa;
   private String modelo;
   private TipoVeiculo tipo;
+  private boolean disponivel = true; // padrão: disponível
 
   public Veiculo(String placa, String modelo, TipoVeiculo tipo) {
     this.placa = placa;
     this.modelo = modelo;
     this.tipo = tipo;
+    this.disponivel = true;
   }
 
   public String getPlaca() {
@@ -24,7 +25,15 @@ public class Veiculo {
     return tipo;
   }
 
-  public String getIdentificador() {
-    return placa;
+  public boolean isDisponivel() {
+    return disponivel;
   }
+
+  public void setDisponivel(boolean disponivel) {
+    this.disponivel = disponivel;
+  }
+  public String getIdentificador() {
+    return this.placa;
+  }
+
 }
