@@ -2,6 +2,13 @@ package utils;
 
 public class Validator {
 
+    public static boolean validarNome(String nome) {
+        if (nome == null || nome.trim().isEmpty()) return false;
+
+        // letras, acentos e espaços
+        return nome.matches("[A-Za-zÀ-ÿ ]+");
+    }
+
     // ==================== CPF/CNPJ ====================
     public static boolean validarCPF(String cpf) {
         if (cpf == null) return false;
