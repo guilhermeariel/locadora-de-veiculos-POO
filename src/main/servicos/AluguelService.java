@@ -3,16 +3,16 @@ package servicos;
 import model.Aluguel;
 import model.Cliente;
 import model.Veiculo;
-import repository.AluguelRepository;
+import repository.AluguelRepositorio;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class AluguelService {
 
-  private final AluguelRepository aluguelRepositorio;
+  private final AluguelRepositorio aluguelRepositorio;
 
-  public AluguelService(AluguelRepository aluguelRepositorio) {
+  public AluguelService(AluguelRepositorio aluguelRepositorio) {
     this.aluguelRepositorio = aluguelRepositorio;
   }
 

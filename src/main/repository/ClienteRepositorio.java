@@ -33,7 +33,7 @@ public class ClienteRepositorio extends RepositorioMemoria<Cliente, String> {
         public Aluguel buscarPorVeiculo(Veiculo veiculo) {
             for (Aluguel aluguel : alugueis) {
                 if (aluguel.getVeiculo().equals(veiculo) &&
-                    aluguel.getDataDevolucao() == null) {
+                    aluguel.getDataFim() == null) {
                     return aluguel;
                 }
             }
