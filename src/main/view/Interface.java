@@ -1,13 +1,8 @@
 package view;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-
-import java.util.List;
 
 public class Interface extends Application {
     private VBox root;
@@ -18,6 +13,7 @@ public class Interface extends Application {
 
     CadastroCliente cadastroCliente = new CadastroCliente();
     CadastroVeiculo cadastroVeiculo = new CadastroVeiculo();
+    BuscaVeiculo buscaVeiculo = new BuscaVeiculo();
 
     @Override
     public void start(javafx.stage.Stage stage) {
@@ -56,6 +52,10 @@ public class Interface extends Application {
         if (opcao.equals("Cadastrar Veículo")) {
             root.getChildren().add(cadastroVeiculo.getGrid());
             System.out.println("Cadastrar Veículo");
+        }
+        if (opcao.equals("Buscar Veículo")) {
+            root.getChildren().add(buscaVeiculo.getGrid());
+            System.out.println("Buscar Veículo");
         }
         System.out.println(root.getChildren().toString());
     }
