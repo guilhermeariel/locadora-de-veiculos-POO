@@ -6,7 +6,7 @@ import model.Veiculo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AluguelRepository {
+public class AluguelRepositorio {
 
   private List<Aluguel> alugueis = new ArrayList<>();
 
