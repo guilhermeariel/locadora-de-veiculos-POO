@@ -17,6 +17,7 @@ public class VeiculoServiceImpl implements VeiculoService {
         this.veiculoRepositorio = veiculoRepositorio;
     }
 
+    @Override
     public void cadastrarVeiculo(String placa, String modelo, String tipoVeiculoStr) {
         if (veiculoRepositorio.buscarPorIdentificador(placa) != null) {
             throw new IllegalArgumentException("Já existe um veículo com essa placa.");
@@ -40,6 +41,7 @@ public class VeiculoServiceImpl implements VeiculoService {
         veiculoRepositorio.salvar(veiculo);
     }
 
+    @Override
     public void atualizarVeiculo(String placa, String novoTipoStr, Boolean novaDisponibilidade) {
         Veiculo veiculo = veiculoRepositorio.buscarPorIdentificador(placa);
 
@@ -62,6 +64,7 @@ public class VeiculoServiceImpl implements VeiculoService {
         veiculoRepositorio.atualizar(veiculo);
     }
 
+    @Override
     public List<Veiculo> buscarVeiculoPorModelo(String nome) {
         List<Veiculo> veiculos = veiculoRepositorio.listar().stream()
                 .filter(v -> v.getModelo().toLowerCase().contains(nome.toLowerCase()))
@@ -74,6 +77,7 @@ public class VeiculoServiceImpl implements VeiculoService {
         return veiculos;
     }
 
+    @Override
     public Veiculo buscarVeiculoPorId(String placa) {
         Veiculo veiculo = veiculoRepositorio.buscarPorIdentificador(placa);
 
@@ -84,6 +88,7 @@ public class VeiculoServiceImpl implements VeiculoService {
         return veiculo;
     }
 
+    @Override
     public boolean validarDisponibilidade(String placa) {
         Veiculo veiculo = veiculoRepositorio.buscarPorIdentificador(placa);
 
