@@ -113,7 +113,7 @@ public class ClienteServiceImplTest {
     }
 
     @Test
-    void when_AtualizarNomeClienteInexistente_thenThrowException() {
+    void when_AtualizarClienteInexistente_thenThrowException() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 clienteService.atualizarCliente("00000000000", "Novo Nome")
         );
