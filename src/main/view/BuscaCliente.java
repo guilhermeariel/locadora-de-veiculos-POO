@@ -16,7 +16,8 @@ public class BuscaCliente extends AbstractGridMenu{
     }
     @Override
     protected void gridMenu() {
-        ObservableList<Cliente> observableCliente = FXCollections.observableArrayList(repositorio.listar());
+        ObservableList<Cliente> observableCliente = FXCollections.observableArrayList(repositorio != null?
+                repositorio.listar() : List.of());
         ListView<Cliente> listaCliente = new ListView<>(observableCliente);
         listaCliente.getSelectionModel().select(0);
         Label labelFiltro = new Label("Filtrar por:");

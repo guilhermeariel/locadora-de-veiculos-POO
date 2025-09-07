@@ -17,7 +17,9 @@ public class BuscaVeiculo extends AbstractGridMenu{
 
     @Override
     protected void gridMenu() {
-        ObservableList<Veiculo> observableVeiculos = FXCollections.observableArrayList(repositorio.listar());
+        ObservableList<Veiculo> observableVeiculos = FXCollections.observableArrayList(
+            repositorio != null ? repositorio.listar() : List.of()
+        );
         ListView<Veiculo> listaVeiculos = new ListView<>(observableVeiculos);
         listaVeiculos.getSelectionModel().select(0);
         Label labelFiltro = new Label("Filtrar por:");

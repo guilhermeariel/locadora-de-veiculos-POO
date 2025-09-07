@@ -3,6 +3,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
+import repository.AluguelRepositorio;
 import repository.ClienteRepositorio;
 import repository.VeiculoRepositorio;
 
@@ -10,6 +11,7 @@ public class Interface extends Application {
     private VBox root;
     private final ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
     private final VeiculoRepositorio veiculoRepositorio = new VeiculoRepositorio();
+    private final AluguelRepositorio aluguelRepositorio = new AluguelRepositorio();
 
     String[] listaMenu = new String[]{"Cadastrar Cliente", "Cadastrar Veículo",
             "Buscar Cliente", "Buscar Veículo",
@@ -19,12 +21,15 @@ public class Interface extends Application {
     CadastroVeiculo cadastroVeiculo = new CadastroVeiculo();
     BuscaVeiculo buscaVeiculo = new BuscaVeiculo(veiculoRepositorio);
     BuscaCliente buscaCliente = new BuscaCliente(clienteRepositorio);
+    AlugaVeiculo alugaVeiculo = new AlugaVeiculo(aluguelRepositorio,
+                                                 clienteRepositorio,
+                                                 veiculoRepositorio);
 
     @Override
     public void start(javafx.stage.Stage stage) {
         root = new VBox(10);
 
-        Scene scene = new Scene(root, 300, 200);
+        Scene scene = new Scene(root, 300, 400);
 
         ComboBox<String> comboMenu = new ComboBox<>();
         comboMenu.getItems().addAll(listaMenu);
@@ -65,6 +70,14 @@ public class Interface extends Application {
         if (opcao.equals("Buscar Cliente")) {
             root.getChildren().add(buscaCliente.getGrid());
             System.out.println("Buscar Cliente");
+        }
+        if (opcao.equals("Alugar Veículo")) {
+            root.getChildren().add(alugaVeiculo.getGrid());
+            System.out.println("Alugar Veículo");
+        }
+        if (opcao.equals("Devolver Veículo")) {
+            // root.getChildren().add(devolveVeiculo.getGrid());
+            System.out.println("Devolver Veículo");
         }
         System.out.println(root.getChildren().toString());
     }
