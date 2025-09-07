@@ -23,7 +23,7 @@ public class AluguelRepositorioTest {
 
     @Test
     void when_SalvarAluguel_Then_AluguelExistenteNaLista() {
-        Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now(), LocalDateTime.now().plusDays(1));
+        Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now());
         aluguelRepo.salvar(aluguel);
 
         assertEquals(1, aluguelRepo.listar().size());
@@ -32,7 +32,7 @@ public class AluguelRepositorioTest {
 
     @Test
     void when_AtualizarAluguelExistente_Then_AluguelAtualizado() {
-        Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now(), LocalDateTime.now().plusDays(1));
+        Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now());
         aluguelRepo.salvar(aluguel);
 
         aluguel.setDataFim(LocalDateTime.now().plusDays(2));
@@ -44,7 +44,7 @@ public class AluguelRepositorioTest {
 
     @Test
     void when_AtualizarAluguelNaoExistente_Then_NaoAlteraLista() {
-        Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now(), LocalDateTime.now().plusDays(1));
+        Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now());
         int tamanhoDaListaAntes = aluguelRepo.listar().size();
 
         aluguelRepo.atualizar(aluguel);
@@ -55,7 +55,7 @@ public class AluguelRepositorioTest {
 
     @Test
     void when_BuscarPorIdentificadorExistente_Then_RetornaAluguelCorreto() {
-        Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now(), LocalDateTime.now().plusDays(1));
+        Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now());
         aluguelRepo.salvar(aluguel);
         int id = aluguel.getIdentificador();
 
@@ -73,8 +73,8 @@ public class AluguelRepositorioTest {
 
     @Test
     void when_ListarAlugueis_Then_RetornaListaComTodos() {
-        Aluguel aluguel1 = new Aluguel(cliente, veiculo, LocalDateTime.now(), LocalDateTime.now().plusDays(1));
-        Aluguel aluguel2 = new Aluguel(cliente, veiculo, LocalDateTime.now(), LocalDateTime.now().plusDays(2));
+        Aluguel aluguel1 = new Aluguel(cliente, veiculo, LocalDateTime.now());
+        Aluguel aluguel2 = new Aluguel(cliente, veiculo, LocalDateTime.now());
 
         aluguelRepo.salvar(aluguel1);
         aluguelRepo.salvar(aluguel2);
@@ -86,7 +86,7 @@ public class AluguelRepositorioTest {
 
     @Test
     void when_GetIdentificador_Then_RetornaCorreto() {
-        Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now(), LocalDateTime.now().plusDays(1));
+        Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now());
         int id = aluguel.getIdentificador();
 
         assertEquals(id, aluguelRepo.getIdentificador(aluguel));
