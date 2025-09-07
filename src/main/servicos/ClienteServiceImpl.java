@@ -4,7 +4,8 @@ import model.Cliente;
 import model.PessoaFisica;
 import model.PessoaJuridica;
 import repository.ClienteRepositorio;
-import utils.Validator;
+
+import java.util.List;
 
 public class ClienteServiceImpl implements ClienteService {
 
@@ -14,56 +15,31 @@ public class ClienteServiceImpl implements ClienteService {
         this.clienteRepositorio = clienteRepositorio;
     }
 
+    @Override
     public void cadastrarCliente(String nome, String documento, boolean isPessoaFisica) {
-        Cliente cliente;
-
-        if (clienteRepositorio.buscarPorIdentificador(documento) != null) {
-            throw new IllegalArgumentException("Já existe cliente cadastrado com esse documento.");
-        }
-
-        if (!Validator.validarNome(nome)) {
-            throw new IllegalArgumentException("Nome inválido");
-        }
-
-        if (isPessoaFisica) {
-            cliente = new PessoaFisica(nome, documento);
-            if (!Validator.validarCPF(documento)) {
-                throw new IllegalArgumentException("CPF inválido.");
-            }
-        } else {
-            cliente = new PessoaJuridica(nome, documento);
-            if (!Validator.validarCNPJ(documento)) {
-                throw new IllegalArgumentException("CNPJ inválido.");
-            }
-        }
+        Cliente cliente = isPessoaFisica ?
+            new PessoaFisica(nome, documento) :
+            new PessoaJuridica(nome, documento);
 
         clienteRepositorio.salvar(cliente);
     }
 
     @Override
     public Cliente buscarClientePorId(String documento) {
-        Cliente cliente = clienteRepositorio.buscarPorIdentificador(documento);
-
-        if (cliente == null) {
-            throw new IllegalArgumentException("Cliente não encontrado.");
-        }
-
-        return cliente;
+        return clienteRepositorio.buscarPorIdentificador(documento);
     }
 
+    @Override
     public void atualizarCliente(String documento, String novoNome) {
-        Cliente cliente = clienteRepositorio.buscarPorIdentificador(documento);
-
-        if (cliente == null) {
-            throw new IllegalArgumentException("Cliente não encontrado.");
+        Cliente cliente = buscarClientePorId(documento);
+        if (cliente != null) {
+            cliente.setNome(novoNome);
+            clienteRepositorio.atualizar(cliente);
         }
+    }
 
-        if (!Validator.validarNome(novoNome)) {
-            throw new IllegalArgumentException("Nome inválido.");
-        }
-
-        cliente.setNome(novoNome);
-
-        clienteRepositorio.atualizar(cliente);
+    @Override
+    public List<Cliente> listarClientes() {
+        return clienteRepositorio.listar(); // 👈 Aqui está a implementação
     }
 }

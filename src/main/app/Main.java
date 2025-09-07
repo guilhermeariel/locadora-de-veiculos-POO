@@ -37,5 +37,8 @@ public class Main {
 
     System.out.println("Veículo cadastrado:");
     System.out.println(carro);
+    for (Cliente cliente : clienteService.listarClientes()) {
+      System.out.println(cliente);
+    }
   }
 }
