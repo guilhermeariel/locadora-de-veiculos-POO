@@ -10,5 +10,5 @@ public interface VeiculoService {
     void atualizarVeiculo(String placa, String novoTipoStr, Boolean novaDisponibilidade);
     List<Veiculo> buscarVeiculoPorModelo(String nome);
     Veiculo buscarVeiculoPorId(String placa);
-    public boolean validarDisponibilidade(String placa);
+    boolean validarDisponibilidade(String placa);
 }
