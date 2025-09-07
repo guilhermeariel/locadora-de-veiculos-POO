@@ -26,6 +26,7 @@ public abstract class RepositorioMemoria<T, K> implements Repositorio<T, K> {
         }
     }
 
+    @Override
     public T buscarPorIdentificador(K identificador) {
         for (T objeto : lista) {
             if (getIdentificador(objeto).equals(identificador)) {

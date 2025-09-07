@@ -21,6 +21,7 @@ public class AluguelServiceImpl implements AluguelService {
         this.clienteRepositorio = clienteRepositorio;
     }
 
+    @Override
     public void alugar(Cliente cliente, Veiculo veiculo) {
         if (cliente == null || clienteRepositorio.buscarPorIdentificador(cliente.getIdentificador()) == null) {
             throw new IllegalArgumentException("Cliente inválido ou não cadastrado.");
@@ -38,6 +39,7 @@ public class AluguelServiceImpl implements AluguelService {
         aluguelRepositorio.salvar(aluguel);
     }
 
+    @Override
     public void devolver(Cliente cliente, Veiculo veiculo) {
         Aluguel aluguel = buscarAluguelPorVeiculo(veiculo);
 
@@ -54,6 +56,7 @@ public class AluguelServiceImpl implements AluguelService {
         veiculoRepositorio.atualizar(veiculo);
     }
 
+    @Override
     public Aluguel buscarAluguelPorVeiculo(Veiculo veiculo) {
         return aluguelRepositorio.listar().stream()
                 .filter(a -> a.getVeiculo().equals(veiculo) && a.getDataFim() == null)

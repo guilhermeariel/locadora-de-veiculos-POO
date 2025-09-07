@@ -14,6 +14,7 @@ public class ClienteServiceImpl implements ClienteService {
         this.clienteRepositorio = clienteRepositorio;
     }
 
+    @Override
     public void cadastrarCliente(String nome, String documento, boolean isPessoaFisica) {
         Cliente cliente;
 
@@ -51,6 +52,7 @@ public class ClienteServiceImpl implements ClienteService {
         return cliente;
     }
 
+    @Override
     public void atualizarCliente(String documento, String novoNome) {
         Cliente cliente = clienteRepositorio.buscarPorIdentificador(documento);
 
