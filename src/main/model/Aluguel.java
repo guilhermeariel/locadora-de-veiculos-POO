@@ -57,4 +57,18 @@ public class Aluguel {
   public void setDataFim(LocalDateTime dataFim) {
     this.dataFim = dataFim;
   }
+
+  // ✅ Método alternativo com nome mais semântico
+  public LocalDateTime getDataDevolucao() {
+    return dataFim;
+  }
+
+  // (Opcional) Para facilitar prints e debug
+  @Override
+  public String toString() {
+    return "Aluguel ID: " + id + ", Cliente: " + cliente.getNome()
+        + ", Veículo: " + veiculo.getModelo()
+        + ", Início: " + dataInicio
+        + ", Fim: " + dataFim;
+  }
 }

@@ -65,4 +65,15 @@ public class AluguelService {
     double valorComDesconto = aluguel.calcularValor();
     System.out.printf("Valor com desconto aplicado: R$ %.2f\n", valorComDesconto);
   }
+  public void registrarAluguel(Aluguel aluguel) {
+    if (!aluguel.getVeiculo().isDisponivel()) {
+      System.out.println("Veículo indisponível para aluguel.");
+      return;
+    }
+
+    aluguel.getVeiculo().setDisponivel(false);
+    aluguelRepositorio.salvar(aluguel);
+    System.out.println("Aluguel registrado com sucesso!");
+  }
+
 }

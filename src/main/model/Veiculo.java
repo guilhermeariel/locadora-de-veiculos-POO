@@ -6,11 +6,11 @@ public class Veiculo {
   private TipoVeiculo tipo;
   private boolean disponivel = true; // padrão: disponível
 
-  public Veiculo(String placa, String modelo, TipoVeiculo tipo) {
+  public Veiculo(String placa, TipoVeiculo tipo, String modelo, boolean disponivel) {
     this.placa = placa;
-    this.modelo = modelo;
     this.tipo = tipo;
-    this.disponivel = true;
+    this.modelo = modelo;
+    this.disponivel = disponivel;
   }
 
   public String getPlaca() {
@@ -32,8 +32,18 @@ public class Veiculo {
   public void setDisponivel(boolean disponivel) {
     this.disponivel = disponivel;
   }
+
   public String getIdentificador() {
     return this.placa;
   }
 
+  @Override
+  public String toString() {
+    return "Veículo{" +
+        "placa='" + placa + '\'' +
+        ", modelo='" + modelo + '\'' +
+        ", tipo=" + tipo +
+        ", disponível=" + disponivel +
+        '}';
+  }
 }
