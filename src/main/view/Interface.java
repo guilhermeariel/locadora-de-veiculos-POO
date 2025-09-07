@@ -3,9 +3,13 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
+import repository.ClienteRepositorio;
+import repository.VeiculoRepositorio;
 
 public class Interface extends Application {
     private VBox root;
+    private final ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
+    private final VeiculoRepositorio veiculoRepositorio = new VeiculoRepositorio();
 
     String[] listaMenu = new String[]{"Cadastrar Cliente", "Cadastrar Veículo",
             "Buscar Cliente", "Buscar Veículo",
@@ -13,7 +17,8 @@ public class Interface extends Application {
 
     CadastroCliente cadastroCliente = new CadastroCliente();
     CadastroVeiculo cadastroVeiculo = new CadastroVeiculo();
-    BuscaVeiculo buscaVeiculo = new BuscaVeiculo();
+    BuscaVeiculo buscaVeiculo = new BuscaVeiculo(veiculoRepositorio);
+    BuscaCliente buscaCliente = new BuscaCliente(clienteRepositorio);
 
     @Override
     public void start(javafx.stage.Stage stage) {
@@ -56,6 +61,10 @@ public class Interface extends Application {
         if (opcao.equals("Buscar Veículo")) {
             root.getChildren().add(buscaVeiculo.getGrid());
             System.out.println("Buscar Veículo");
+        }
+        if (opcao.equals("Buscar Cliente")) {
+            root.getChildren().add(buscaCliente.getGrid());
+            System.out.println("Buscar Cliente");
         }
         System.out.println(root.getChildren().toString());
     }
