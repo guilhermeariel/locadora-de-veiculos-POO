@@ -42,6 +42,8 @@ public class Aluguel {
     return veiculo;
   }
 
+  public LocalDateTime getDataInicio() { return dataInicio;}
+
   public LocalDateTime getDataFim() {
     return dataFim;
   }
