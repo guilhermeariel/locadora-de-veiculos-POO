@@ -58,7 +58,7 @@ public class Aluguel {
     this.dataFim = dataFim;
   }
 
-  // ✅ Método alternativo com nome mais semântico
+  // Metodo alternativo com nome mais semântico
   public LocalDateTime getDataDevolucao() {
     return dataFim;
   }

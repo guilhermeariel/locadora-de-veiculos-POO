@@ -37,20 +37,27 @@ public class MainScanner {
 
       switch (opcao) {
         case 1:
-          System.out.print("Placa: ");
-          String placa = scanner.nextLine();
-          System.out.print("Modelo: ");
+          System.out.print("Placa (ex: ABC1D23): ");
+          String placa = scanner.nextLine().toUpperCase();
+          if (!placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
+            System.out.println("❌ Placa inválida. Formato esperado: ABC1D23.");
+            break;
+          }
+
+          System.out.print("Modelo (ex: Fiat Argo, Toyota Corolla 2.0, Jeep Compass): ");
           String modelo = scanner.nextLine();
-          System.out.print("Tipo (PEQUENO, MEDIO, SUV): ");
+
+          System.out.print("Tipo (Hatch, Sedan ou SUV): ");
           String tipoStr = scanner.nextLine().toUpperCase();
           try {
             TipoVeiculo tipo = TipoVeiculo.valueOf(tipoStr);
             Veiculo novoVeiculo = new Veiculo(placa, tipo, modelo, true);
             veiculoService.cadastrar(novoVeiculo);
           } catch (IllegalArgumentException e) {
-            System.out.println("Tipo de veículo inválido. Use: PEQUENO, MEDIO ou SUV.");
+            System.out.println("❌ Tipo inválido. Use: Hatch, Sedan ou SUV.");
           }
           break;
+
 
         case 2:
           System.out.println("\n--- VEÍCULOS CADASTRADOS ---");
@@ -61,11 +68,18 @@ public class MainScanner {
           System.out.print("Nome: ");
           String nome = scanner.nextLine();
           System.out.print("CPF ou CNPJ: ");
-          String doc = scanner.nextLine();
-          System.out.print("É pessoa física? (s/n): ");
-          boolean isPf = scanner.nextLine().equalsIgnoreCase("s");
+          String doc = scanner.nextLine().replaceAll("[^\\d]", ""); // remove pontos, traços, barras
+          boolean isPf;
+          if (doc.matches("^\\d{11}$")) {
+            isPf = true;
+          } else if (doc.matches("^\\d{14}$")) {
+            isPf = false;
+          } else {
+            System.out.println("❌ Documento inválido. CPF deve ter 11 dígitos e CNPJ 14 dígitos.");
+            break;
+          }
           clienteService.cadastrarCliente(nome, doc, isPf);
-          System.out.println("Cliente cadastrado com sucesso!");
+          System.out.println("✅ Cliente cadastrado com sucesso!");
           break;
 
         case 4:
@@ -75,15 +89,28 @@ public class MainScanner {
 
         case 5:
           System.out.print("Placa do veículo: ");
-          String placaAluguel = scanner.nextLine();
-          System.out.print("CPF ou CNPJ do cliente: ");
-          String docAluguel = scanner.nextLine();
+          String placaAluguel = scanner.nextLine().toUpperCase();
           Veiculo veiculoAluguel = veiculoRepo.buscarPorIdentificador(placaAluguel);
+          if (veiculoAluguel == null) {
+            System.out.println("❌ Veículo com a placa informada não foi encontrado.");
+            break;
+          }
+          if (!veiculoAluguel.isDisponivel()) {
+            System.out.println("❌ Veículo já está alugado.");
+            break;
+          }
+          System.out.print("CPF ou CNPJ do cliente: ");
+          String docAluguel = scanner.nextLine().replaceAll("[^\\d]", ""); // normaliza documento
           Cliente clienteAluguel = clienteRepo.buscarPorIdentificador(docAluguel);
+          if (clienteAluguel == null) {
+            System.out.println("❌ Cliente com o CPF/CNPJ informado não foi encontrado.");
+            break;
+          }
           aluguelService.alugar(clienteAluguel, veiculoAluguel);
+          System.out.println("✅ Aluguel realizado com sucesso!");
           break;
 
-        case 6: // ✅ Listar veículos alugados
+        case 6: //  Listar veículos alugados
           System.out.println("\n--- VEÍCULOS ALUGADOS ---");
           List<Veiculo> alugados = veiculoService.listarVeiculosAlugados();
           if (alugados.isEmpty()) {
@@ -93,15 +120,29 @@ public class MainScanner {
           }
           break;
 
-        case 7: // ✅ Devolver veículo
+        case 7:
           System.out.print("Placa do veículo: ");
-          String placaDevolucao = scanner.nextLine();
-          System.out.print("CPF ou CNPJ do cliente: ");
-          String docDevolucao = scanner.nextLine();
+          String placaDevolucao = scanner.nextLine().toUpperCase();
           Veiculo veiculoDevolucao = veiculoRepo.buscarPorIdentificador(placaDevolucao);
+          if (veiculoDevolucao == null) {
+            System.out.println("❌ Veículo com a placa informada não foi encontrado.");
+            break;
+          }
+          if (veiculoDevolucao.isDisponivel()) {
+            System.out.println("❌ Este veículo não está alugado no momento.");
+            break;
+          }
+          System.out.print("CPF ou CNPJ do cliente: ");
+          String docDevolucao = scanner.nextLine().replaceAll("[^\\d]", ""); // normaliza
           Cliente clienteDevolucao = clienteRepo.buscarPorIdentificador(docDevolucao);
+          if (clienteDevolucao == null) {
+            System.out.println("❌ Cliente com o CPF/CNPJ informado não foi encontrado.");
+            break;
+          }
           aluguelService.devolver(clienteDevolucao, veiculoDevolucao);
+          System.out.println("✅ Devolução realizada com sucesso!");
           break;
+
 
         case 0:
           System.out.println("Encerrando o sistema...");

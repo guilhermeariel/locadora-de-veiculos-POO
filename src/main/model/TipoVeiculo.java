@@ -1,8 +1,8 @@
 package model;
 
 public enum TipoVeiculo {
-  PEQUENO(100.0),
-  MEDIO(150.0),
+  HATCH(100.0),
+  SEDAN(150.0),
   SUV(200.0);
 
   private final double valorDiaria;
