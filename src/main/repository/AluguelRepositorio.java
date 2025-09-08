@@ -20,7 +20,7 @@ public class AluguelRepositorio extends RepositorioMemoria<Aluguel, Integer> {
                 break;
             case "veiculo":
                 lista.stream()
-                    .filter(a -> a.getVeiculo().getModelo().toLowerCase().contains(valor.toLowerCase()))
+                    .filter(a -> a.getVeiculo().getIdentificador().toLowerCase().contains(valor.toLowerCase()))
                     .forEach(filtrado::salvar);
                 break;
             case "data de aluguel":
@@ -38,4 +38,20 @@ public class AluguelRepositorio extends RepositorioMemoria<Aluguel, Integer> {
         }
         return filtrado;
     }
+
+    public Aluguel buscarPorItem(Object obj, String campo) {
+        return switch (campo.toLowerCase()) {
+            case "cliente" -> lista.stream()
+                    .filter(a -> a.getCliente().equals(obj))
+                    .findFirst()
+                    .orElse(null);
+            case "veiculo" -> lista.stream()
+                    .filter(a -> a.getVeiculo().equals(obj))
+                    .findFirst()
+                    .orElse(null);
+            default -> null;
+        };
+    }
+
+
 }

@@ -3,7 +3,6 @@ package view;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import model.Cliente;
 import repository.AluguelRepositorio;
 import repository.ClienteRepositorio;
 import repository.VeiculoRepositorio;
@@ -12,16 +11,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import javafx.beans.value.ChangeListener;
+import servicos.AluguelService;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class AlugaVeiculo extends AbstractGridMenu{
-    private AluguelRepositorio repositorio;
-    private ClienteRepositorio clienteRepositorio;
-    private VeiculoRepositorio veiculoRepositorio;
+    private final AluguelRepositorio repositorio;
+    private final ClienteRepositorio clienteRepositorio;
+    private final VeiculoRepositorio veiculoRepositorio;
+    private final AluguelService aluguelService;
 
     public AlugaVeiculo(AluguelRepositorio repositorio,
                         ClienteRepositorio clienteRepositorio,
@@ -29,6 +30,7 @@ public class AlugaVeiculo extends AbstractGridMenu{
         this.repositorio = repositorio;
         this.clienteRepositorio = clienteRepositorio;
         this.veiculoRepositorio = veiculoRepositorio;
+        this.aluguelService = new AluguelService(repositorio);
     }
 
     @Override

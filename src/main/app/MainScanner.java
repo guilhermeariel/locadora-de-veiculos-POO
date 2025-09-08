@@ -1,11 +1,10 @@
-package main;
+package app;
 
 import java.util.List;
 import model.*;
 import repository.*;
 import servicos.*;
 
-import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class MainScanner {
@@ -14,7 +13,7 @@ public class MainScanner {
 
     VeiculoRepositorio veiculoRepo = new VeiculoRepositorio();
     ClienteRepositorio clienteRepo = new ClienteRepositorio();
-    AluguelRepository aluguelRepo = new AluguelRepository();
+    AluguelRepositorio aluguelRepo = new AluguelRepositorio();
 
     VeiculoService veiculoService = new VeiculoService(veiculoRepo);
     ClienteServiceImpl clienteService = new ClienteServiceImpl(clienteRepo);

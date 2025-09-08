@@ -2,6 +2,9 @@ package repository;
 
 import model.Veiculo;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class VeiculoRepositorio extends RepositorioMemoria<Veiculo, String> {
 
     @Override
@@ -14,6 +17,7 @@ public class VeiculoRepositorio extends RepositorioMemoria<Veiculo, String> {
             .anyMatch(v -> v.getPlaca().equalsIgnoreCase(placa));
     }
 
+    @Override
     public VeiculoRepositorio filtrar(String filtro, String valor) {
         VeiculoRepositorio filtrado = new VeiculoRepositorio();
         switch (filtro.toLowerCase()) {
@@ -36,5 +40,11 @@ public class VeiculoRepositorio extends RepositorioMemoria<Veiculo, String> {
                 lista.forEach(filtrado::salvar);
         }
         return filtrado;
+    }
+
+    public List<Veiculo> listarDisponiveis() {
+        return lista.stream()
+            .filter(Veiculo::isDisponivel)
+            .collect(Collectors.toList());
     }
 }
