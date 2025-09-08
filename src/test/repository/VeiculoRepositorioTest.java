@@ -17,7 +17,7 @@ public class VeiculoRepositorioTest {
 
     @Test
     void when_SalvarVeiculo_Then_VeiculoExistenteNaLista() {
-        Veiculo veiculo = new Veiculo("ABC1234", "Fiat Uno", TipoVeiculo.PEQUENO);
+        Veiculo veiculo = new Veiculo("ABC1234", TipoVeiculo.HATCH, "Fiat Uno", true);
         veiculoRepo.salvar(veiculo);
 
         assertEquals(1, veiculoRepo.listar().size());
@@ -26,10 +26,10 @@ public class VeiculoRepositorioTest {
 
     @Test
     void when_AtualizarVeiculoExistente_Then_VeiculoAtualizado() {
-        Veiculo veiculo = new Veiculo("ABC1234", "Fiat Uno", TipoVeiculo.PEQUENO);
+        Veiculo veiculo = new Veiculo("ABC1234", TipoVeiculo.HATCH, "Fiat Uno", true);
         veiculoRepo.salvar(veiculo);
 
-        Veiculo veiculoAtualizado = new Veiculo("ABC1234", "Fiat Uno 2025", TipoVeiculo.PEQUENO);
+        Veiculo veiculoAtualizado = new Veiculo("ABC1234", TipoVeiculo.HATCH, "Fiat Uno 2025", true);
         veiculoRepo.atualizar(veiculoAtualizado);
 
         Veiculo veiculoBuscado = veiculoRepo.buscarPorIdentificador("ABC1234");
@@ -38,7 +38,7 @@ public class VeiculoRepositorioTest {
 
     @Test
     void when_AtualizarVeiculoNaoExistente_Then_NaoAlteraLista() {
-        Veiculo veiculo = new Veiculo("XYZ9999", "Gol", TipoVeiculo.MEDIO);
+        Veiculo veiculo = new Veiculo("XYZ9999", TipoVeiculo.SEDAN, "Gol", true);
         int tamanhoDaListaAntes = veiculoRepo.listar().size();
 
         veiculoRepo.atualizar(veiculo);
@@ -50,7 +50,7 @@ public class VeiculoRepositorioTest {
     @Test
     void when_BuscarPorIdentificadorExistente_Then_RetornaVeiculoCorreto() {
         String placa = "ABC1234";
-        Veiculo veiculo = new Veiculo(placa, "Fiat Uno", TipoVeiculo.PEQUENO);
+        Veiculo veiculo = new Veiculo(placa, TipoVeiculo.HATCH, "Fiat Uno", true);
         veiculoRepo.salvar(veiculo);
 
         Veiculo veiculoBuscado = veiculoRepo.buscarPorIdentificador(placa);
@@ -66,8 +66,8 @@ public class VeiculoRepositorioTest {
 
     @Test
     void when_ListarVeiculos_Then_RetornaListaComTodos() {
-        Veiculo veiculo1 = new Veiculo("ABC1234", "Fiat Uno", TipoVeiculo.PEQUENO);
-        Veiculo veiculo2 = new Veiculo("DEF5678", "Chevrolet Onix", TipoVeiculo.MEDIO);
+        Veiculo veiculo1 = new Veiculo("ABC1234", TipoVeiculo.SEDAN, "Fiat Uno", true);
+        Veiculo veiculo2 = new Veiculo("DEF5678", TipoVeiculo.SUV, "Chevrolet Onix", true);
 
         veiculoRepo.salvar(veiculo1);
         veiculoRepo.salvar(veiculo2);
@@ -80,7 +80,7 @@ public class VeiculoRepositorioTest {
     @Test
     void when_GetIdentificador_Then_RetornaCorreto() {
         String placa = "ABC1234";
-        Veiculo veiculo = new Veiculo(placa, "Fiat Uno", TipoVeiculo.PEQUENO);
+        Veiculo veiculo = new Veiculo(placa, TipoVeiculo.HATCH, "Fiat Uno", true);
 
         assertEquals(placa, veiculoRepo.getIdentificador(veiculo));
     }

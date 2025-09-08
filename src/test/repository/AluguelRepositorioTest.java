@@ -18,7 +18,8 @@ public class AluguelRepositorioTest {
     void setup() {
         aluguelRepo = new AluguelRepositorio();
         cliente = new PessoaFisica("Paula", "11111111111");
-        veiculo = new Veiculo("ABC1234", "Fiat Uno", TipoVeiculo.PEQUENO);
+        veiculo = new Veiculo("ABC1234", TipoVeiculo.HATCH, "Fiat Uno", true);
+
     }
 
     @Test
