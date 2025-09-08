@@ -18,9 +18,9 @@ public class CadastroVeiculo extends AbstractGridMenu{
         comboVeiculoTipo.getItems().addAll("Pequeno", "Medio", "Suv");
         comboVeiculoTipo.setValue("Pequeno");
         Label labelPlaca = new Label("Placa:");
-        TextField entryPlaca = new TextField();
+        TextField entryPlaca = ValidatedTextField.criaEntryPlaca();
         Label labelModelo = new Label("Modelo:");
-        TextField entryModelo = new TextField();
+        TextField entryModelo = ValidatedTextField.criaEntryTexto();
         Button buttonCadastrar = new Button("Cadastrar");
 
         grid.add(labelPlaca, 0, 0);

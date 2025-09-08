@@ -43,4 +43,32 @@ public class Validations {
         // Verifica se as horas e minutos são válidos
         return (horas >= 0 && horas < 24) && (minutos >= 0 && minutos < 60);
     }
+
+    public static boolean cpfValido(String cpf) {
+        if (cpf == null) return false;
+
+        // Remove pontos e traços
+        String somenteNumeros = cpf.replaceAll("[\\.\\-]", "");
+
+        // Verifica se tem exatamente 11 dígitos
+        return somenteNumeros.matches("\\d{11}");
+    }
+
+    public static boolean cnpjValido(String cnpj) {
+        if (cnpj == null) return false;
+
+        // Remove pontos, barras e traço
+        String somenteNumeros = cnpj.replaceAll("[\\.\\-/]", "");
+
+        // Verifica se tem exatamente 14 dígitos
+        return somenteNumeros.matches("\\d{14}");
+    }
+
+    public static boolean documentoValido(String doc) {
+        return cpfValido(doc) || cnpjValido(doc);
+    }
+
+    public static boolean nomeValido(String nome) {
+        return nome != null && !nome.trim().isEmpty() && nome.matches("[A-Za-zÀ-ú ]+");
+    }
 }

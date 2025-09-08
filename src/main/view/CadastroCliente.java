@@ -1,5 +1,6 @@
 package view;
 
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -19,10 +20,11 @@ public class CadastroCliente extends AbstractGridMenu{
         comboClienteTipo.getItems().addAll("Pessoa Física", "Pessoa Jurídica");
         comboClienteTipo.setValue("Pessoa Física");
         Label labelNome = new Label("Nome:");
-        TextField entryNome = new TextField();
+        TextField entryNome = ValidatedTextField.criaEntryTexto();
         Label labelDocumento = new Label("CPF:");
-        TextField entryDoc = new TextField();
+        TextField entryDoc = ValidatedTextField.criaEntryDocumento();
         Button buttonCadastrar = new Button("Cadastrar");
+        buttonCadastrar.setDisable(true);
 
         comboClienteTipo.setOnAction(e -> {
             String selecionado = comboClienteTipo.getValue();
@@ -39,6 +41,19 @@ public class CadastroCliente extends AbstractGridMenu{
         grid.add(labelDocumento, 0, 2);
         grid.add(entryDoc, 1, 2);
         grid.add(buttonCadastrar, 1, 3);
+
+        ChangeListener<String> changeListener = (obs, old, neu) -> {
+            boolean nomeValido = Validations.nomeValido(entryNome.getText());
+            boolean docValido = Validations.documentoValido(entryDoc.getText());
+            boolean docCpf = comboClienteTipo.getValue().contains("Física") && Validations.cpfValido(entryDoc.getText());
+            boolean docCnpj = comboClienteTipo.getValue().contains("Jurídica") && Validations.cnpjValido(entryDoc.getText());
+            docValido = docValido && (docCpf || docCnpj);
+            buttonCadastrar.setDisable(!nomeValido || !docValido);
+        };
+
+        entryNome.textProperty().addListener(changeListener);
+        entryDoc.textProperty().addListener(changeListener);
+        comboClienteTipo.valueProperty().addListener(changeListener);
     }
 
     public GridPane getGrid() {

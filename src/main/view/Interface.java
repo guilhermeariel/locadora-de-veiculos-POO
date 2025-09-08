@@ -24,6 +24,9 @@ public class Interface extends Application {
     AlugaVeiculo alugaVeiculo = new AlugaVeiculo(aluguelRepositorio,
                                                  clienteRepositorio,
                                                  veiculoRepositorio);
+    DevolveVeiculo devolveVeiculo = new DevolveVeiculo(aluguelRepositorio,
+                                                       clienteRepositorio,
+                                                       veiculoRepositorio);
 
     @Override
     public void start(javafx.stage.Stage stage) {
@@ -76,7 +79,7 @@ public class Interface extends Application {
             System.out.println("Alugar Veículo");
         }
         if (opcao.equals("Devolver Veículo")) {
-            // root.getChildren().add(devolveVeiculo.getGrid());
+            root.getChildren().add(devolveVeiculo.getGrid());
             System.out.println("Devolver Veículo");
         }
         System.out.println(root.getChildren().toString());

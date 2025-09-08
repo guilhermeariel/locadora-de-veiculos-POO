@@ -44,4 +44,10 @@ public class ValidatedTextField {
         return textField;
     }
 
+    public static TextField criaEntryTexto() {
+        String regex = "^[A-Za-zÀ-ú ]+$";
+        TextField textField = criaEntryGenerico(regex);
+        return textField;
+    }
+
 }

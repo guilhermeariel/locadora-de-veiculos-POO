@@ -1,5 +1,6 @@
 package view;
 
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import model.Cliente;
@@ -53,6 +54,7 @@ public class AlugaVeiculo extends AbstractGridMenu{
         TextField entryVeiculo = ValidatedTextField.criaEntryPlaca();
         entryVeiculo.setEditable(false);
         Button buttonConfirmar = new Button("Confirmar Aluguel");
+        buttonConfirmar.setDisable(true);
 
         grid.add(labelCliente, 0, 0);
         grid.add(entryCliente, 1, 0);
@@ -76,10 +78,24 @@ public class AlugaVeiculo extends AbstractGridMenu{
             calculaDiaria(entryInicio, entryHoraInicio, entryFim, entryHoraFim, entryDiarias);
         };
 
+        ChangeListener<String> ativaBotao = (obs, oldText, newText) -> {
+            boolean clienteValido = Validations.documentoValido(entryCliente.getText()) &&
+                                   clienteRepositorio.buscarPorIdentificador(entryCliente.getText()) != null;
+            boolean veiculoSelecionado = !entryVeiculo.getText().isEmpty();
+            boolean diariasValidas = !entryDiarias.getText().isEmpty() && Integer.parseInt(entryDiarias.getText()) > 0;
+            buttonConfirmar.setDisable(!(clienteValido && veiculoSelecionado && diariasValidas));
+        };
+
         entryInicio.textProperty().addListener(listener);
         entryFim.textProperty().addListener(listener);
         entryHoraInicio.textProperty().addListener(listener);
         entryHoraFim.textProperty().addListener(listener);
+
+        for(Node node : grid.getChildren()) {
+            if (node instanceof TextField) {
+                ((TextField) node).textProperty().addListener(ativaBotao);
+            }
+        }
     }
 
     public void calculaDiaria(TextField inicio, TextField horaInicio, TextField fim, TextField horaFim, TextField diarias) {
