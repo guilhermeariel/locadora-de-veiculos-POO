@@ -1,5 +1,6 @@
 package main;
 
+import java.util.List;
 import model.*;
 import repository.*;
 import servicos.*;
@@ -27,7 +28,8 @@ public class MainScanner {
       System.out.println("3. Cadastrar cliente");
       System.out.println("4. Listar clientes");
       System.out.println("5. Alugar veículo");
-      System.out.println("6. Devolver veículo");
+      System.out.println("6. Lista de veiculos alugados");
+      System.out.println("7. Devolver veículo");
       System.out.println("0. Sair");
       System.out.print("Escolha uma opção: ");
       opcao = scanner.nextInt();
@@ -41,9 +43,13 @@ public class MainScanner {
           String modelo = scanner.nextLine();
           System.out.print("Tipo (PEQUENO, MEDIO, SUV): ");
           String tipoStr = scanner.nextLine().toUpperCase();
-          TipoVeiculo tipo = TipoVeiculo.valueOf(tipoStr);
-
-
+          try {
+            TipoVeiculo tipo = TipoVeiculo.valueOf(tipoStr);
+            Veiculo novoVeiculo = new Veiculo(placa, tipo, modelo, true);
+            veiculoService.cadastrar(novoVeiculo);
+          } catch (IllegalArgumentException e) {
+            System.out.println("Tipo de veículo inválido. Use: PEQUENO, MEDIO ou SUV.");
+          }
           break;
 
         case 2:
@@ -59,6 +65,7 @@ public class MainScanner {
           System.out.print("É pessoa física? (s/n): ");
           boolean isPf = scanner.nextLine().equalsIgnoreCase("s");
           clienteService.cadastrarCliente(nome, doc, isPf);
+          System.out.println("Cliente cadastrado com sucesso!");
           break;
 
         case 4:
@@ -76,7 +83,17 @@ public class MainScanner {
           aluguelService.alugar(clienteAluguel, veiculoAluguel);
           break;
 
-        case 6:
+        case 6: // ✅ Listar veículos alugados
+          System.out.println("\n--- VEÍCULOS ALUGADOS ---");
+          List<Veiculo> alugados = veiculoService.listarVeiculosAlugados();
+          if (alugados.isEmpty()) {
+            System.out.println("Nenhum veículo está alugado no momento.");
+          } else {
+            alugados.forEach(System.out::println);
+          }
+          break;
+
+        case 7: // ✅ Devolver veículo
           System.out.print("Placa do veículo: ");
           String placaDevolucao = scanner.nextLine();
           System.out.print("CPF ou CNPJ do cliente: ");

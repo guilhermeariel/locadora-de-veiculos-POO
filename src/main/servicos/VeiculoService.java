@@ -42,4 +42,10 @@ public class VeiculoService {
   public boolean validarDisponibilidade(Veiculo veiculo) {
     return veiculo.isDisponivel();
   }
+  public List<Veiculo> listarVeiculosAlugados() {
+    return veiculoRepositorio.listar().stream()
+        .filter(v -> !v.isDisponivel())
+        .collect(Collectors.toList());
+  }
+
 }
