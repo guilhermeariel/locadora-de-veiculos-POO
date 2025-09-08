@@ -10,7 +10,7 @@ import servicos.ClienteServiceImpl;
 import java.util.List;
 
 public class BuscaCliente extends AbstractGridMenu{
-    private ClienteRepositorio repositorio;
+    private final ClienteRepositorio repositorio;
     private final ClienteServiceImpl clienteService;
 
     BuscaCliente(ClienteRepositorio repositorio){
@@ -58,9 +58,5 @@ public class BuscaCliente extends AbstractGridMenu{
             }
         });
 
-    }
-
-    public void setRepositorio(ClienteRepositorio repositorio) {
-        this.repositorio = repositorio;
     }
 }

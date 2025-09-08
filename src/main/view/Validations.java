@@ -71,4 +71,9 @@ public class Validations {
     public static boolean nomeValido(String nome) {
         return nome != null && !nome.trim().isEmpty() && nome.matches("[A-Za-zÀ-ú ]+");
     }
+
+    public static boolean placaValida(String placa) {
+        if (placa == null) return false;
+        return placa.matches("[A-Z]{3}-\\d{4}") || placa.matches("[A-Z]{3}\\d[A-Z]\\d{2}");
+    }
 }

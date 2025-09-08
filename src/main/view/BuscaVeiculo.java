@@ -3,16 +3,21 @@ package view;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import model.Cliente;
+import model.TipoVeiculo;
 import model.Veiculo;
 import repository.VeiculoRepositorio;
+import servicos.VeiculoService;
 
 import java.util.List;
 
 public class BuscaVeiculo extends AbstractGridMenu{
-    private VeiculoRepositorio repositorio;
+    private final VeiculoRepositorio repositorio;
+    private final VeiculoService veiculoService;
 
     BuscaVeiculo(VeiculoRepositorio repositorio){
         this.repositorio = repositorio;
+        this.veiculoService = new VeiculoService(repositorio);
     }
 
     @Override
@@ -41,6 +46,9 @@ public class BuscaVeiculo extends AbstractGridMenu{
         buttonFiltrar.setOnAction(e -> {
             String filtro = comboFiltro.getValue();
             String valor = entryFiltro.getText().trim().toLowerCase();
+            if (comboFiltro.getValue().equals("Tipo")){
+                TipoVeiculo tipo = TipoVeiculo.valueOf(valor.trim().toUpperCase());
+            }
             List<Veiculo> veiculosFiltrados = repositorio.filtrar(filtro, valor).listar();
             observableVeiculos.setAll(veiculosFiltrados);
             if (!veiculosFiltrados.isEmpty()) {
@@ -48,9 +56,13 @@ public class BuscaVeiculo extends AbstractGridMenu{
             }
         });
 
-    }
+        buttonRemover.setOnAction(e -> {
+            Veiculo veiculoSelecionado = listaVeiculos.getSelectionModel().getSelectedItem();
+            if (veiculoSelecionado != null) {
+                veiculoService.removerVeiculo(veiculoSelecionado.getIdentificador());
+                observableVeiculos.remove(veiculoSelecionado);
+            }
+        });
 
-    public void setRepositorio(VeiculoRepositorio repositorio) {
-        this.repositorio = repositorio;
     }
 }

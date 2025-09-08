@@ -25,7 +25,7 @@ public class Interface extends Application {
             "Alugar Veículo", "Devolver Veículo"};
 
     CadastroCliente cadastroCliente = new CadastroCliente(clienteRepositorio);
-    CadastroVeiculo cadastroVeiculo = new CadastroVeiculo();
+    CadastroVeiculo cadastroVeiculo = new CadastroVeiculo(veiculoRepositorio);
     BuscaVeiculo buscaVeiculo = new BuscaVeiculo(veiculoRepositorio);
     BuscaCliente buscaCliente = new BuscaCliente(clienteRepositorio);
     AlugaVeiculo alugaVeiculo = new AlugaVeiculo(aluguelRepositorio,

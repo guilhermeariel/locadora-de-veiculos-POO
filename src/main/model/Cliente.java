@@ -1,6 +1,8 @@
 package model;
 
-public abstract class Cliente {
+import java.io.Serializable;
+
+public abstract class Cliente implements Serializable {
   protected String nome;
 
   public Cliente(String nome) {

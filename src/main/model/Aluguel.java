@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class Aluguel {
+public class Aluguel implements Serializable {
   private static int proximoId = 1;  // ID global incremental
   private final int id;              // ID único do aluguel
 

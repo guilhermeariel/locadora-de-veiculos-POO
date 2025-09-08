@@ -1,5 +1,7 @@
 package model;
 
+import java.io.Serializable;
+
 public class PessoaFisica extends Cliente {
   private String cpf;
 

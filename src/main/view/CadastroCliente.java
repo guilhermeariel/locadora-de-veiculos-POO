@@ -2,10 +2,7 @@ package view;
 
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import model.Cliente;
@@ -72,10 +69,19 @@ public class CadastroCliente extends AbstractGridMenu{
             String documento = entryDoc.getText().trim();
             String tipo = comboClienteTipo.getValue();
 
-
-            clienteService.cadastrarCliente(nome, documento, tipo.equals("Pessoa Física"));
-            Cliente c = repositorio.buscarPorIdentificador(documento);
-            System.out.println("Cliente cadastrado com sucesso:\n" + c.getNome());
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informação");
+            alert.setHeaderText("Adição de Cliente");
+            try {
+                clienteService.cadastrarCliente(nome, documento, tipo.equals("Pessoa Física"));
+                Cliente c = repositorio.buscarPorIdentificador(documento);
+                alert.setContentText("Cliente cadastrado com sucesso:\n" + c.getNome());
+            }
+            catch (IllegalArgumentException ex) {
+                alert.setAlertType(Alert.AlertType.ERROR);
+                alert.setContentText(ex.getMessage());
+            }
+            alert.showAndWait();
 
         });
     }
