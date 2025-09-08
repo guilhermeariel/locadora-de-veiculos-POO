@@ -8,8 +8,20 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
+import model.Cliente;
+import repository.ClienteRepositorio;
+
+import servicos.ClienteServiceImpl;
 
 public class CadastroCliente extends AbstractGridMenu{
+    private final ClienteServiceImpl clienteService;
+    private final ClienteRepositorio repositorio;
+
+    public CadastroCliente(ClienteRepositorio repositorio) {
+        this.repositorio = repositorio;
+        this.clienteService = new ClienteServiceImpl(repositorio);
+    }
+
     @Override
     protected void gridMenu(){
         grid.setHgap(10); // espaçamento horizontal
@@ -54,10 +66,18 @@ public class CadastroCliente extends AbstractGridMenu{
         entryNome.textProperty().addListener(changeListener);
         entryDoc.textProperty().addListener(changeListener);
         comboClienteTipo.valueProperty().addListener(changeListener);
-    }
 
-    public GridPane getGrid() {
-        return grid;
+        buttonCadastrar.setOnAction(e -> {
+            String nome = entryNome.getText().trim();
+            String documento = entryDoc.getText().trim();
+            String tipo = comboClienteTipo.getValue();
+
+
+            clienteService.cadastrarCliente(nome, documento, tipo.equals("Pessoa Física"));
+            Cliente c = repositorio.buscarPorIdentificador(documento);
+            System.out.println("Cliente cadastrado com sucesso:\n" + c.getNome());
+
+        });
     }
 
 

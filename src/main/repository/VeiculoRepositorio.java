@@ -20,20 +20,20 @@ public class VeiculoRepositorio extends RepositorioMemoria<Veiculo, String> {
             case "placa":
                 lista.stream()
                     .filter(v -> v.getPlaca().toLowerCase().contains(valor.toLowerCase()))
-                    .forEach(filtrado::adicionar);
+                    .forEach(filtrado::salvar);
                 break;
             case "modelo":
                 lista.stream()
                     .filter(v -> v.getModelo().toLowerCase().contains(valor.toLowerCase()))
-                    .forEach(filtrado::adicionar);
+                    .forEach(filtrado::salvar);
                 break;
             case "tipo":
                 lista.stream()
                     .filter(v -> v.getTipo().toString().toLowerCase().contains(valor.toLowerCase()))
-                    .forEach(filtrado::adicionar);
+                    .forEach(filtrado::salvar);
                 break;
             default:
-                lista.forEach(filtrado::adicionar);
+                lista.forEach(filtrado::salvar);
         }
         return filtrado;
     }

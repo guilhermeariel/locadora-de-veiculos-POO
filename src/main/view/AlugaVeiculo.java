@@ -47,7 +47,7 @@ public class AlugaVeiculo extends AbstractGridMenu{
         TextField entryDiarias = new TextField();
         entryDiarias.setEditable(false);
         ComboBox<String> comboVeiculo = new ComboBox<>();
-        comboVeiculo.getItems().addAll("Pequeno", "Medio", "Suv");
+        comboVeiculo.getItems().addAll("Hatch", "Sedan", "Suv");
         comboVeiculo.setValue("Tipo de Veiculo");
         Button buttonBuscar = new Button("Buscar Veículo");
         Label labelVeiculo = new Label("Veículo:");

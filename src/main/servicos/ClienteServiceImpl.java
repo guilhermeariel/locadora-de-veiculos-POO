@@ -22,7 +22,12 @@ public class ClienteServiceImpl implements ClienteService {
             new PessoaFisica(nome, documento) :
             new PessoaJuridica(nome, documento);
 
-        clienteRepositorio.salvar(cliente);
+        if (clienteRepositorio.buscarPorIdentificador(documento) != null) {
+            throw new IllegalArgumentException("Cliente com este documento já existe.");
+        }
+        else {
+            clienteRepositorio.salvar(cliente);
+        }
     }
 
     @Override
@@ -47,5 +52,13 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public List<Cliente> listarClientes() {
         return clienteRepositorio.listar(); // 👈 Aqui está a implementação
+    }
+
+    @Override
+    public void removerCliente(String documento) {
+        Cliente cliente = buscarClientePorId(documento);
+        if (cliente != null) {
+            clienteRepositorio.getLista().remove(cliente);
+        }
     }
 }

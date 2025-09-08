@@ -9,4 +9,6 @@ public interface Repositorio<T, K> {
     Repositorio<T,K> filtrar(String campo, String valor);
     T buscarPorIdentificador(K identificador);
     List<T> listar();
+    void adicionarLista(List<T> novaLista);
+    void limpar();
 }

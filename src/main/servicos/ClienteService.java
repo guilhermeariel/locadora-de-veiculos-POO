@@ -11,4 +11,5 @@ public interface ClienteService {
     Cliente buscarClientePorId(String documento);
     void atualizarCliente(String documento, String novoNome);
     List<Cliente> listarClientes();
+    void removerCliente(String documento);
 }

@@ -5,15 +5,19 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import model.Cliente;
 import repository.ClienteRepositorio;
+import servicos.ClienteServiceImpl;
 
 import java.util.List;
 
 public class BuscaCliente extends AbstractGridMenu{
     private ClienteRepositorio repositorio;
+    private final ClienteServiceImpl clienteService;
 
     BuscaCliente(ClienteRepositorio repositorio){
         this.repositorio = repositorio;
+        this.clienteService = new ClienteServiceImpl(repositorio);
     }
+
     @Override
     protected void gridMenu() {
         ObservableList<Cliente> observableCliente = FXCollections.observableArrayList(repositorio != null?
@@ -43,6 +47,14 @@ public class BuscaCliente extends AbstractGridMenu{
             observableCliente.setAll(clientessFiltrados);
             if (!clientessFiltrados.isEmpty()) {
                 listaCliente.getSelectionModel().select(0);
+            }
+        });
+
+        buttonRemover.setOnAction(e -> {
+            Cliente clienteSelecionado = listaCliente.getSelectionModel().getSelectedItem();
+            if (clienteSelecionado != null) {
+                clienteService.removerCliente(clienteSelecionado.getIdentificador());
+                observableCliente.remove(clienteSelecionado);
             }
         });
 

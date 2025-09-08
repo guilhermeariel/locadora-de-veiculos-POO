@@ -1,7 +1,11 @@
 package view;
+import controller.GerenciadorDados;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
 import repository.AluguelRepositorio;
 import repository.ClienteRepositorio;
@@ -12,12 +16,15 @@ public class Interface extends Application {
     private final ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
     private final VeiculoRepositorio veiculoRepositorio = new VeiculoRepositorio();
     private final AluguelRepositorio aluguelRepositorio = new AluguelRepositorio();
+    private final GerenciadorDados gerenciadorDados = new GerenciadorDados(clienteRepositorio,
+                                                                          veiculoRepositorio,
+                                                                          aluguelRepositorio);
 
     String[] listaMenu = new String[]{"Cadastrar Cliente", "Cadastrar Veículo",
             "Buscar Cliente", "Buscar Veículo",
             "Alugar Veículo", "Devolver Veículo"};
 
-    CadastroCliente cadastroCliente = new CadastroCliente();
+    CadastroCliente cadastroCliente = new CadastroCliente(clienteRepositorio);
     CadastroVeiculo cadastroVeiculo = new CadastroVeiculo();
     BuscaVeiculo buscaVeiculo = new BuscaVeiculo(veiculoRepositorio);
     BuscaCliente buscaCliente = new BuscaCliente(clienteRepositorio);
@@ -32,6 +39,21 @@ public class Interface extends Application {
     public void start(javafx.stage.Stage stage) {
         root = new VBox(10);
 
+        // Configuração do Menu
+        MenuBar menuBar = new MenuBar();
+        Menu fileMenu = new Menu("File");
+        MenuItem abrirItem = new MenuItem("Abrir");
+        MenuItem salvarItem = new MenuItem("Salvar");
+        MenuItem sairItem = new MenuItem("Sair");
+        fileMenu.getItems().addAll(abrirItem, salvarItem, sairItem);
+        menuBar.getMenus().add(fileMenu);
+        root.getChildren().add(menuBar);
+
+        sairItem.setOnAction(e -> stage.close());
+        abrirItem.setOnAction(e -> gerenciadorDados.carregarDados("dados"));
+        salvarItem.setOnAction(e -> gerenciadorDados.salvarDados("dados"));
+
+        // Configuração da Cena
         Scene scene = new Scene(root, 300, 400);
 
         ComboBox<String> comboMenu = new ComboBox<>();
@@ -57,7 +79,7 @@ public class Interface extends Application {
     }
 
     public void mudaForm(String opcao) {
-        root.getChildren().remove(1);
+        root.getChildren().remove(2);
         if (opcao.equals("Cadastrar Cliente")) {
             root.getChildren().add(cadastroCliente.getGrid());
 
@@ -82,7 +104,6 @@ public class Interface extends Application {
             root.getChildren().add(devolveVeiculo.getGrid());
             System.out.println("Devolver Veículo");
         }
-        System.out.println(root.getChildren().toString());
     }
 
 }

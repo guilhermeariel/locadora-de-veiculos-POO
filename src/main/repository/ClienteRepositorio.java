@@ -16,15 +16,15 @@ public class ClienteRepositorio extends RepositorioMemoria<Cliente, String> {
             case "nome":
                 lista.stream()
                     .filter(c -> c.getNome().toLowerCase().contains(valor.toLowerCase()))
-                    .forEach(filtrado::adicionar);
+                    .forEach(filtrado::salvar);
                 break;
             case "documento":
                 lista.stream()
                     .filter(c -> c.getIdentificador().toLowerCase().contains(valor.toLowerCase()))
-                    .forEach(filtrado::adicionar);
+                    .forEach(filtrado::salvar);
                 break;
             default:
-                lista.forEach(filtrado::adicionar);
+                lista.forEach(filtrado::salvar);
         }
         return filtrado;
     }

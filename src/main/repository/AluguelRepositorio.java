@@ -16,25 +16,25 @@ public class AluguelRepositorio extends RepositorioMemoria<Aluguel, Integer> {
             case "cliente":
                 lista.stream()
                     .filter(a -> a.getCliente().getNome().toLowerCase().contains(valor.toLowerCase()))
-                    .forEach(filtrado::adicionar);
+                    .forEach(filtrado::salvar);
                 break;
             case "veiculo":
                 lista.stream()
                     .filter(a -> a.getVeiculo().getModelo().toLowerCase().contains(valor.toLowerCase()))
-                    .forEach(filtrado::adicionar);
+                    .forEach(filtrado::salvar);
                 break;
             case "data de aluguel":
                 lista.stream()
                     .filter(a -> a.getDataInicio().toString().contains(valor))
-                    .forEach(filtrado::adicionar);
+                    .forEach(filtrado::salvar);
                 break;
             case "data de devolucao":
                 lista.stream()
                     .filter(a -> a.getDataFim().toString().contains(valor))
-                    .forEach(filtrado::adicionar);
+                    .forEach(filtrado::salvar);
                 break;
             default:
-                lista.forEach(filtrado::adicionar);
+                lista.forEach(filtrado::salvar);
         }
         return filtrado;
     }

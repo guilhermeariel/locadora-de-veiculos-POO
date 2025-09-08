@@ -36,12 +36,21 @@ public abstract class RepositorioMemoria<T, K> implements Repositorio<T, K> {
         return null;
     }
 
-    public void adicionar(T obj) {
-        lista.add(obj);
-    }
-
     @Override
     public List<T> listar() {
         return Collections.unmodifiableList(lista);
+    }
+
+    public void adicionarLista(List<T> novaLista) {
+        this.lista.addAll(novaLista);
+    }
+
+    @Override
+    public void limpar() {
+        lista.clear();
+    }
+
+    public List<T> getLista() {
+        return lista;
     }
 }
