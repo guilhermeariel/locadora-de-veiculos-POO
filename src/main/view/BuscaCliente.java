@@ -12,10 +12,12 @@ import java.util.List;
 public class BuscaCliente extends AbstractGridMenu{
     private final ClienteRepositorio repositorio;
     private final ClienteServiceImpl clienteService;
+    private final Atualizador atualizador;
 
-    BuscaCliente(ClienteRepositorio repositorio){
+    BuscaCliente(ClienteRepositorio repositorio, Atualizador atualizador){
         this.repositorio = repositorio;
         this.clienteService = new ClienteServiceImpl(repositorio);
+        this.atualizador = atualizador;
     }
 
     @Override
@@ -55,6 +57,14 @@ public class BuscaCliente extends AbstractGridMenu{
             if (clienteSelecionado != null) {
                 clienteService.removerCliente(clienteSelecionado.getIdentificador());
                 observableCliente.remove(clienteSelecionado);
+            }
+        });
+
+        buttonEditar.setOnAction(e-> {
+            Cliente clienteSelecionado = listaCliente.getSelectionModel().getSelectedItem();
+            if (clienteSelecionado != null) {
+                atualizador.setCliente(clienteSelecionado);
+                atualizador.atualizaCliente();
             }
         });
 

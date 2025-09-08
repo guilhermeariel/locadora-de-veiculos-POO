@@ -19,6 +19,7 @@ public class Interface extends Application {
     private final GerenciadorDados gerenciadorDados = new GerenciadorDados(clienteRepositorio,
                                                                           veiculoRepositorio,
                                                                           aluguelRepositorio);
+    private final Atualizador atualizador = new Atualizador(veiculoRepositorio, clienteRepositorio);
 
     String[] listaMenu = new String[]{"Cadastrar Cliente", "Cadastrar Veículo",
             "Buscar Cliente", "Buscar Veículo",
@@ -26,8 +27,8 @@ public class Interface extends Application {
 
     CadastroCliente cadastroCliente = new CadastroCliente(clienteRepositorio);
     CadastroVeiculo cadastroVeiculo = new CadastroVeiculo(veiculoRepositorio);
-    BuscaVeiculo buscaVeiculo = new BuscaVeiculo(veiculoRepositorio);
-    BuscaCliente buscaCliente = new BuscaCliente(clienteRepositorio);
+    BuscaVeiculo buscaVeiculo = new BuscaVeiculo(veiculoRepositorio, atualizador);
+    BuscaCliente buscaCliente = new BuscaCliente(clienteRepositorio, atualizador);
     AlugaVeiculo alugaVeiculo = new AlugaVeiculo(aluguelRepositorio,
                                                  clienteRepositorio,
                                                  veiculoRepositorio);

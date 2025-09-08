@@ -1,9 +1,7 @@
 package model;
 
-import java.io.Serializable;
-
 public class PessoaFisica extends Cliente {
-  private String cpf;
+  private final String cpf;
 
   public PessoaFisica(String nome, String cpf) {
     super(nome);

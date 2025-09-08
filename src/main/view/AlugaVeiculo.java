@@ -13,7 +13,6 @@ import javafx.beans.value.ChangeListener;
 import servicos.AluguelService;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -23,7 +22,7 @@ public class AlugaVeiculo extends AbstractGridMenu{
     private final ClienteRepositorio clienteRepositorio;
     private final VeiculoRepositorio veiculoRepositorio;
     private final AluguelService aluguelService;
-    private ListaVeiculos listaVeiculos = new ListaVeiculos();
+    private final ListaVeiculos listaVeiculos = new ListaVeiculos();
 
     public AlugaVeiculo(AluguelRepositorio repositorio,
                         ClienteRepositorio clienteRepositorio,
@@ -124,6 +123,9 @@ public class AlugaVeiculo extends AbstractGridMenu{
             alert.setHeaderText("Aluguel de Veículo");
 
             try {
+                if (!veiculo.isDisponivel()){
+                    throw new IllegalArgumentException("Veículo não está disponível para aluguel");
+                }
                 aluguelService.alugar(cliente, veiculo);
                 Aluguel aluguel = repositorio.buscarPorItem(cliente, "cliente");
                 if (aluguel != null && aluguel.getVeiculo().getPlaca().equals(placa)

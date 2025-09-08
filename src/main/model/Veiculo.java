@@ -3,49 +3,56 @@ package model;
 import java.io.Serializable;
 
 public class Veiculo implements Serializable {
-  private String placa;
-  private String modelo;
-  private TipoVeiculo tipo;
-  private boolean disponivel = true; // padrão: disponível
+    private final String placa;
+    private String modelo;
+    private TipoVeiculo tipo;
+    private boolean disponivel;
 
-  public Veiculo(String placa, TipoVeiculo tipo, String modelo, boolean disponivel) {
-    this.placa = placa;
-    this.tipo = tipo;
-    this.modelo = modelo;
-    this.disponivel = disponivel;
-  }
+    public Veiculo(String placa, TipoVeiculo tipo, String modelo, boolean disponivel) {
+        this.placa = placa;
+        this.tipo = tipo;
+        this.modelo = modelo;
+        this.disponivel = disponivel;
+    }
 
-  public String getPlaca() {
+    public String getPlaca() {
     return placa;
-  }
+    }
 
-  public String getModelo() {
+    public String getModelo() {
     return modelo;
-  }
+    }
 
-  public TipoVeiculo getTipo() {
+    public TipoVeiculo getTipo() {
     return tipo;
-  }
+    }
 
-  public boolean isDisponivel() {
+    public boolean isDisponivel() {
     return disponivel;
-  }
+    }
 
-  public void setDisponivel(boolean disponivel) {
+    public void setDisponivel(boolean disponivel) {
     this.disponivel = disponivel;
-  }
+    }
 
-  public String getIdentificador() {
+    public String getIdentificador() {
     return this.placa;
-  }
+    }
 
-  @Override
-  public String toString() {
-    return "Veículo{" +
-        "placa='" + placa + '\'' +
-        ", modelo='" + modelo + '\'' +
-        ", tipo=" + tipo +
-        ", disponível=" + disponivel +
-        '}';
-  }
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+    public void setTipo(TipoVeiculo tipo) {
+        this.tipo = tipo;
+    }
+
+    @Override
+    public String toString() {
+        return "Veículo{" +
+            "placa='" + placa + '\'' +
+            ", modelo='" + modelo + '\'' +
+            ", tipo=" + tipo +
+            ", disponível=" + disponivel +
+            '}';
+    }
 }
