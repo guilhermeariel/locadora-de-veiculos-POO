@@ -1,19 +1,19 @@
 package view;
 
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
+import model.Aluguel;
+import model.Cliente;
+import model.Veiculo;
 import repository.AluguelRepositorio;
 import repository.ClienteRepositorio;
 import repository.VeiculoRepositorio;
-
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 
 import javafx.beans.value.ChangeListener;
 import servicos.AluguelService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -23,6 +23,7 @@ public class AlugaVeiculo extends AbstractGridMenu{
     private final ClienteRepositorio clienteRepositorio;
     private final VeiculoRepositorio veiculoRepositorio;
     private final AluguelService aluguelService;
+    private ListaVeiculos listaVeiculos = new ListaVeiculos();
 
     public AlugaVeiculo(AluguelRepositorio repositorio,
                         ClienteRepositorio clienteRepositorio,
@@ -43,7 +44,11 @@ public class AlugaVeiculo extends AbstractGridMenu{
         Label diarias = new Label("Diárias:");
         TextField entryCliente = ValidatedTextField.criaEntryDocumento();
         TextField entryInicio = ValidatedTextField.criaEntryData();
+        entryInicio.setDisable(true);
+        entryInicio.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         TextField entryHoraInicio = ValidatedTextField.criaEntryHora();
+        entryHoraInicio.setDisable(true);
+        entryHoraInicio.setText(LocalTime.now().plusMinutes(30).format(DateTimeFormatter.ofPattern("HH:mm")));
         TextField entryFim = ValidatedTextField.criaEntryData();
         TextField entryHoraFim = ValidatedTextField.criaEntryHora();
         TextField entryDiarias = new TextField();
@@ -88,6 +93,15 @@ public class AlugaVeiculo extends AbstractGridMenu{
             buttonConfirmar.setDisable(!(clienteValido && veiculoSelecionado && diariasValidas));
         };
 
+        buttonBuscar.setOnAction(e -> {
+            String tipoVeiculo = comboVeiculo.getValue();
+            VeiculoRepositorio filtroVeiculos = veiculoRepositorio.filtrar("tipo", tipoVeiculo);
+            listaVeiculos.setRepositorio(filtroVeiculos);
+            listaVeiculos.startStage();
+            Veiculo veiculoSelecionado = listaVeiculos.getVeiculoSelecionado();
+            entryVeiculo.setText(veiculoSelecionado.getPlaca());
+        });
+
         entryInicio.textProperty().addListener(listener);
         entryFim.textProperty().addListener(listener);
         entryHoraInicio.textProperty().addListener(listener);
@@ -98,6 +112,34 @@ public class AlugaVeiculo extends AbstractGridMenu{
                 ((TextField) node).textProperty().addListener(ativaBotao);
             }
         }
+
+        buttonConfirmar.setOnAction(e -> {
+            String documento = entryCliente.getText().trim();
+            String placa = entryVeiculo.getText().trim();
+            Cliente cliente = clienteRepositorio.buscarPorIdentificador(documento);
+            Veiculo veiculo = veiculoRepositorio.buscarPorIdentificador(placa);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informação");
+            alert.setHeaderText("Aluguel de Veículo");
+
+            try {
+                aluguelService.alugar(cliente, veiculo);
+                Aluguel aluguel = repositorio.buscarPorItem(cliente, "cliente");
+                if (aluguel != null && aluguel.getVeiculo().getPlaca().equals(placa)
+                    && aluguel.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                        .equals(entryInicio.getText())) {
+                    alert.setContentText("Aluguel confirmado");
+                }
+                else {
+                    alert.setContentText("Erro ao confirmar aluguel");
+                }
+            } catch (IllegalArgumentException ex) {
+                alert.setAlertType(Alert.AlertType.ERROR);
+                alert.setContentText(ex.getMessage());
+            }
+            alert.showAndWait();
+        });
     }
 
     public void calculaDiaria(TextField inicio, TextField horaInicio, TextField fim, TextField horaFim, TextField diarias) {
