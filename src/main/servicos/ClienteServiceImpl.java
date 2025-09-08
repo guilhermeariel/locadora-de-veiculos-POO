@@ -3,6 +3,7 @@ package servicos;
 import model.Cliente;
 import model.PessoaFisica;
 import model.PessoaJuridica;
+import model.Veiculo;
 import repository.ClienteRepositorio;
 
 import java.util.List;
@@ -22,6 +23,11 @@ public class ClienteServiceImpl implements ClienteService {
             new PessoaJuridica(nome, documento);
 
         clienteRepositorio.salvar(cliente);
+    }
+
+    @Override
+    public void devolver(Cliente cliente, Veiculo veiculo) {
+
     }
 
     @Override

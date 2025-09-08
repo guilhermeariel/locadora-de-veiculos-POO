@@ -23,6 +23,10 @@ public class VeiculoService {
     veiculoRepositorio.salvar(veiculo);
     System.out.println("Veículo cadastrado com sucesso.");
   }
+  public Veiculo buscarPorPlaca(String placa) {
+    return veiculoRepositorio.buscarPorIdentificador(placa);
+  }
+
 
   public void alterar(Veiculo veiculo) {
     veiculoRepositorio.atualizar(veiculo);

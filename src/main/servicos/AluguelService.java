@@ -35,19 +35,31 @@ public class AluguelService {
   }
 
   public void devolver(Cliente cliente, Veiculo veiculo) {
+    if (cliente == null) {
+      System.out.println("Cliente não encontrado.");
+      return;
+    }
+
+    if (veiculo == null) {
+      System.out.println("Veículo não encontrado.");
+      return;
+    }
+
     Aluguel aluguel = aluguelRepositorio.buscarPorVeiculo(veiculo);
 
-    if (aluguel != null) {
-      aluguel.setDataFim(LocalDateTime.now());
-      veiculo.setDisponivel(true);
-      aluguelRepositorio.atualizar(aluguel);
-
-      double valorFinal = aluguel.calcularValor();
-      System.out.printf("Veículo devolvido. Total a pagar: R$ %.2f\n", valorFinal);
-    } else {
+    if (aluguel == null || aluguel.getDataFim() != null) {
       System.out.println("Nenhum aluguel ativo encontrado para este veículo.");
+      return;
     }
+
+    aluguel.setDataFim(LocalDateTime.now());
+    veiculo.setDisponivel(true);
+    aluguelRepositorio.atualizar(aluguel);
+
+    double valorFinal = aluguel.calcularValor();
+    System.out.printf("Veículo devolvido com sucesso! Valor total: R$ %.2f\n", valorFinal);
   }
+
 
   public long calcularDiarias(Aluguel aluguel) {
     if (aluguel.getDataFim() == null) {
