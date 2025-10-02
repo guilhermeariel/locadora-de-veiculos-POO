@@ -3,7 +3,6 @@ package view;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import model.TipoVeiculo;
 import model.Veiculo;
 import repository.VeiculoRepositorio;
 import servicos.VeiculoService;
@@ -24,7 +23,7 @@ public class BuscaVeiculo extends AbstractGridMenu{
     @Override
     protected void gridMenu() {
         ObservableList<Veiculo> observableVeiculos = FXCollections.observableArrayList(
-            repositorio != null ? repositorio.listar() : List.of()
+            repositorio != null ? repositorio.getLista() : List.of()
         );
         ListView<Veiculo> listaVeiculos = new ListView<>(observableVeiculos);
         listaVeiculos.getSelectionModel().select(0);
@@ -47,7 +46,7 @@ public class BuscaVeiculo extends AbstractGridMenu{
         buttonFiltrar.setOnAction(e -> {
             String filtro = comboFiltro.getValue();
             String valor = entryFiltro.getText().trim().toLowerCase();
-            List<Veiculo> veiculosFiltrados = repositorio.filtrar(filtro, valor).listar();
+            List<Veiculo> veiculosFiltrados = repositorio.filtrar(filtro, valor).getLista();
             observableVeiculos.setAll(veiculosFiltrados);
             if (!veiculosFiltrados.isEmpty()) {
                 listaVeiculos.getSelectionModel().select(0);

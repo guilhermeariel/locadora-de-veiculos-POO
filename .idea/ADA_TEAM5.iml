@@ -43,5 +43,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="junit.jupiter" level="application" />
+    <orderEntry type="library" name="mockito.core" level="application" />
+    <orderEntry type="library" name="mockito.junit.jupiter" level="application" />
   </component>
 </module>

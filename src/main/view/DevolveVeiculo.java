@@ -11,21 +11,21 @@ import model.Veiculo;
 import repository.AluguelRepositorio;
 import repository.ClienteRepositorio;
 import repository.VeiculoRepositorio;
-import servicos.AluguelService;
+import servicos.AluguelServiceImpl;
 
 public class DevolveVeiculo extends AbstractGridMenu {
-    private final AluguelRepositorio repositorio;
+    private final AluguelRepositorio aluguelRepositorio;
     private final ClienteRepositorio clienteRepositorio;
-    private VeiculoRepositorio veiculoRepositorio;
-    private final AluguelService aluguelService;
+    private final VeiculoRepositorio veiculoRepositorio;
+    private final AluguelServiceImpl aluguelService;
 
-    public DevolveVeiculo(AluguelRepositorio repositorio,
+    public DevolveVeiculo(AluguelRepositorio aluguelRepositorio,
                           ClienteRepositorio clienteRepositorio,
                           VeiculoRepositorio veiculoRepositorio) {
-        this.repositorio = repositorio;
+        this.aluguelRepositorio = aluguelRepositorio;
         this.clienteRepositorio = clienteRepositorio;
         this.veiculoRepositorio = veiculoRepositorio;
-        this.aluguelService = new AluguelService(repositorio);
+        this.aluguelService = new AluguelServiceImpl(aluguelRepositorio, veiculoRepositorio, clienteRepositorio);
     }
 
     @Override
@@ -47,13 +47,13 @@ public class DevolveVeiculo extends AbstractGridMenu {
         buttonDevolver.setOnAction(e -> {
             String documento = entryCliente.getText().trim();
             Cliente cliente = clienteRepositorio.buscarPorIdentificador(documento);
-            Aluguel aluguel = repositorio.buscarPorItem(cliente, "cliente");
+            Aluguel aluguel = aluguelRepositorio.buscarPorItem(cliente, "cliente");
             Veiculo veiculo = aluguel.getVeiculo();
 
             Alert alerta = new Alert(Alert.AlertType.INFORMATION);
             alerta.setTitle("Devolução de Veículo");
             try {
-                aluguelService.devolver(cliente, veiculo);
+                aluguelService.devolverVeiculo(cliente, veiculo);
                 alerta.setHeaderText("Veículo devolvido com sucesso!");
                 alerta.setContentText(String.format("Valor total: R$ %.2f", aluguel.calcularValor()));
                 alerta.showAndWait();

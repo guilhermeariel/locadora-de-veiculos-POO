@@ -10,7 +10,7 @@ import repository.ClienteRepositorio;
 import repository.VeiculoRepositorio;
 
 import javafx.beans.value.ChangeListener;
-import servicos.AluguelService;
+import servicos.AluguelServiceImpl;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,19 +18,19 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class AlugaVeiculo extends AbstractGridMenu{
-    private final AluguelRepositorio repositorio;
+    private final AluguelRepositorio aluguelRepositorio;
     private final ClienteRepositorio clienteRepositorio;
     private final VeiculoRepositorio veiculoRepositorio;
-    private final AluguelService aluguelService;
+    private final AluguelServiceImpl aluguelService;
     private final ListaVeiculos listaVeiculos = new ListaVeiculos();
 
-    public AlugaVeiculo(AluguelRepositorio repositorio,
+    public AlugaVeiculo(AluguelRepositorio aluguelRepositorio,
                         ClienteRepositorio clienteRepositorio,
                         VeiculoRepositorio veiculoRepositorio) {
-        this.repositorio = repositorio;
+        this.aluguelRepositorio = aluguelRepositorio;
         this.clienteRepositorio = clienteRepositorio;
         this.veiculoRepositorio = veiculoRepositorio;
-        this.aluguelService = new AluguelService(repositorio);
+        this.aluguelService = new AluguelServiceImpl(aluguelRepositorio, veiculoRepositorio, clienteRepositorio);
     }
 
     @Override
@@ -126,8 +126,8 @@ public class AlugaVeiculo extends AbstractGridMenu{
                 if (!veiculo.isDisponivel()){
                     throw new IllegalArgumentException("Veículo não está disponível para aluguel");
                 }
-                aluguelService.alugar(cliente, veiculo);
-                Aluguel aluguel = repositorio.buscarPorItem(cliente, "cliente");
+                aluguelService.alugarVeiculo(cliente, veiculo);
+                Aluguel aluguel = aluguelRepositorio.buscarPorItem(cliente, "cliente");
                 if (aluguel != null && aluguel.getVeiculo().getPlaca().equals(placa)
                     && aluguel.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                         .equals(entryInicio.getText())) {

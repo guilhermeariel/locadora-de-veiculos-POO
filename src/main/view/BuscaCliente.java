@@ -23,7 +23,7 @@ public class BuscaCliente extends AbstractGridMenu{
     @Override
     protected void gridMenu() {
         ObservableList<Cliente> observableCliente = FXCollections.observableArrayList(repositorio != null?
-                repositorio.listar() : List.of());
+                repositorio.getLista() : List.of());
         ListView<Cliente> listaCliente = new ListView<>(observableCliente);
         listaCliente.getSelectionModel().select(0);
         Label labelFiltro = new Label("Filtrar por:");
@@ -45,7 +45,7 @@ public class BuscaCliente extends AbstractGridMenu{
         buttonFiltrar.setOnAction(e -> {
             String filtro = comboFiltro.getValue();
             String valor = entryFiltro.getText().trim().toLowerCase();
-            List<Cliente> clientessFiltrados = repositorio.filtrar(filtro, valor).listar();
+            List<Cliente> clientessFiltrados = repositorio.filtrar(filtro, valor).getLista();
             observableCliente.setAll(clientessFiltrados);
             if (!clientessFiltrados.isEmpty()) {
                 listaCliente.getSelectionModel().select(0);

@@ -8,7 +8,8 @@ public interface Repositorio<T, K> {
     void atualizar(T obj);
     Repositorio<T,K> filtrar(String campo, String valor);
     T buscarPorIdentificador(K identificador);
-    List<T> listar();
+    List<T> getLista();
     void adicionarLista(List<T> novaLista);
-    void limpar();
+    void limparLista();
+    void removerItem(T item);
 }

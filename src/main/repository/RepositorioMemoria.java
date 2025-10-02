@@ -26,6 +26,7 @@ public abstract class RepositorioMemoria<T, K> implements Repositorio<T, K> {
         }
     }
 
+    @Override
     public T buscarPorIdentificador(K identificador) {
         for (T objeto : lista) {
             if (getIdentificador(objeto).equals(identificador)) {
@@ -37,20 +38,22 @@ public abstract class RepositorioMemoria<T, K> implements Repositorio<T, K> {
     }
 
     @Override
-    public List<T> listar() {
+    public List<T> getLista() {
         return Collections.unmodifiableList(lista);
     }
 
+    @Override
     public void adicionarLista(List<T> novaLista) {
         this.lista.addAll(novaLista);
     }
 
     @Override
-    public void limpar() {
+    public void limparLista() {
         lista.clear();
     }
 
-    public List<T> getLista() {
-        return lista;
+    @Override
+    public void removerItem(T item) {
+        lista.remove(item);
     }
 }

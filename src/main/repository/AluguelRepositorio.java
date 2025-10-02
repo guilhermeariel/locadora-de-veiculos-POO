@@ -52,6 +52,4 @@ public class AluguelRepositorio extends RepositorioMemoria<Aluguel, Integer> {
             default -> null;
         };
     }
-
-
 }

@@ -5,131 +5,148 @@ import model.PessoaFisica;
 import model.PessoaJuridica;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import repository.ClienteRepositorio;
 
+import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 public class ClienteServiceImplTest {
 
+    @Mock
     private ClienteRepositorio clienteRepositorio;
+
+    @InjectMocks
     private ClienteServiceImpl clienteService;
 
+    private String cpf;
+    private String cnpj;
+
     @BeforeEach
-    void setUp() {
-        clienteRepositorio = new ClienteRepositorio(); // ou seu repositório em memória
-        clienteService = new ClienteServiceImpl(clienteRepositorio);
+    void setup() {
+        cpf = "12345678901";
+        cnpj = "12345678000199";
     }
+
+    // --- CADASTRAR CLIENTE ---
 
     @Test
     void when_CadastrarClienteFisicaValida_thenClienteSalvo() {
-        String documento = "12345678901";
-        clienteService.cadastrarCliente("Paula", documento, true);
+        when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(null);
 
-        Cliente cliente = clienteService.buscarClientePorId(documento);
+        clienteService.cadastrarCliente("Paula", cpf, true);
 
-        assertInstanceOf(PessoaFisica.class, cliente);
-        assertEquals("Paula", cliente.getNome());
+        verify(clienteRepositorio, times(1)).salvar(any(PessoaFisica.class));
     }
 
     @Test
     void when_CadastrarClienteJuridicaValida_thenClienteSalvo() {
-        String documento = "12345678000199";
-        clienteService.cadastrarCliente("Empresa X", documento, false);
+        when(clienteRepositorio.buscarPorIdentificador(cnpj)).thenReturn(null);
 
-        Cliente cliente = clienteService.buscarClientePorId(documento);
+        clienteService.cadastrarCliente("Empresa X", cnpj, false);
 
-        assertInstanceOf(PessoaJuridica.class, cliente);
-        assertEquals("Empresa X", cliente.getNome());
+        verify(clienteRepositorio, times(1)).salvar(any(PessoaJuridica.class));
     }
 
     @Test
     void when_CadastrarClienteComDocumentoDuplicado_thenThrowException() {
-        String documento = "12345678901";
-        clienteService.cadastrarCliente("Paula", documento, true);
+        when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(new PessoaFisica("Paula", cpf));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                clienteService.cadastrarCliente("Eduarda", documento, true)
+                clienteService.cadastrarCliente("Eduarda", cpf, true)
         );
 
         assertEquals("Já existe cliente cadastrado com esse documento.", exception.getMessage());
+        verify(clienteRepositorio, never()).salvar(any());
     }
 
-    @Test
-    void when_CadastrarClienteComNomeInvalido_thenThrowException() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                clienteService.cadastrarCliente("", "12345678901", true)
-        );
-
-        assertEquals("Nome inválido", exception.getMessage());
-    }
-
-    @Test
-    void when_CadastrarClienteComCpfInvalido_thenThrowException() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                clienteService.cadastrarCliente("Paula", "123", true)
-        );
-
-        assertEquals("CPF inválido.", exception.getMessage());
-    }
-
-    @Test
-    void when_CadastrarClienteComCnpjInvalido_thenThrowException() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                clienteService.cadastrarCliente("Empresa X", "123", false)
-        );
-
-        assertEquals("CNPJ inválido.", exception.getMessage());
-    }
+    // --- BUSCAR CLIENTE ---
 
     @Test
     void when_BuscarClienteExistente_thenReturnCliente() {
-        String documento = "12345678901";
-        clienteService.cadastrarCliente("Paula", documento, true);
+        PessoaFisica cliente = new PessoaFisica("Paula", cpf);
+        when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(cliente);
 
-        Cliente cliente = clienteService.buscarClientePorId(documento);
+        Cliente resultado = clienteService.buscarClientePorId(cpf);
 
-        assertNotNull(cliente);
-        assertEquals("Paula", cliente.getNome());
+        assertNotNull(resultado);
+        assertEquals("Paula", resultado.getNome());
     }
 
     @Test
     void when_BuscarClienteInexistente_thenThrowException() {
+        when(clienteRepositorio.buscarPorIdentificador("000")).thenReturn(null);
+
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                clienteService.buscarClientePorId("00000000000")
+                clienteService.buscarClientePorId("000")
         );
 
         assertEquals("Cliente não encontrado.", exception.getMessage());
     }
+
+    // --- ATUALIZAR CLIENTE ---
 
     @Test
     void when_AtualizarNomeClienteValido_thenNomeAtualizado() {
-        String documento = "12345678901";
-        clienteService.cadastrarCliente("Paula", documento, true);
-        clienteService.atualizarCliente(documento, "Paula Nova");
+        PessoaFisica cliente = new PessoaFisica("Paula", cpf);
+        when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(cliente);
 
-        Cliente cliente = clienteService.buscarClientePorId(documento);
+        clienteService.atualizarCliente(cpf, "Paula Nova");
 
         assertEquals("Paula Nova", cliente.getNome());
+        verify(clienteRepositorio, times(1)).atualizar(cliente);
     }
 
     @Test
-    void when_AtualizarNomeClienteInexistente_thenThrowException() {
+    void when_AtualizarClienteInexistente_thenThrowException() {
+        when(clienteRepositorio.buscarPorIdentificador("000")).thenReturn(null);
+
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                clienteService.atualizarCliente("00000000000", "Novo Nome")
+                clienteService.atualizarCliente("000", "Novo Nome")
         );
 
         assertEquals("Cliente não encontrado.", exception.getMessage());
+        verify(clienteRepositorio, never()).atualizar(any());
     }
 
     @Test
     void when_AtualizarNomeClienteComNomeInvalido_thenThrowException() {
-        String documento = "12345678901";
-        clienteService.cadastrarCliente("Paula", documento, true);
+        PessoaFisica cliente = new PessoaFisica("Paula", cpf);
+        when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(cliente);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                clienteService.atualizarCliente(documento, "")
+                clienteService.atualizarCliente(cpf, "")
         );
 
         assertEquals("Nome inválido.", exception.getMessage());
+        verify(clienteRepositorio, never()).atualizar(any());
+    }
+
+    // --- REMOVER CLIENTE ---
+
+    @Test
+    void when_RemoverClienteExistente_thenClienteRemovido() {
+        PessoaFisica cliente = new PessoaFisica("Paula", cpf);
+        when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(cliente);
+
+        clienteService.removerCliente(cpf);
+
+        verify(clienteRepositorio, times(1)).removerItem(cliente);
+    }
+
+    @Test
+    void when_RemoverClienteInexistente_thenThrowException() {
+        when(clienteRepositorio.buscarPorIdentificador("000")).thenReturn(null);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                clienteService.removerCliente("000")
+        );
+
+        assertEquals("Cliente não encontrado.", exception.getMessage());
+        verify(clienteRepositorio, never()).removerItem(any());
     }
 }

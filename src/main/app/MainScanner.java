@@ -17,7 +17,7 @@ public class MainScanner {
 
     VeiculoService veiculoService = new VeiculoService(veiculoRepo);
     ClienteServiceImpl clienteService = new ClienteServiceImpl(clienteRepo);
-    AluguelService aluguelService = new AluguelService(aluguelRepo);
+    AluguelServiceImpl aluguelService = new AluguelServiceImpl(aluguelRepo, veiculoRepo, clienteRepo);
 
     int opcao;
     do {
@@ -60,7 +60,7 @@ public class MainScanner {
 
         case 2:
           System.out.println("\n--- VEÍCULOS CADASTRADOS ---");
-          veiculoRepo.listar().forEach(System.out::println);
+          veiculoRepo.getLista().forEach(System.out::println);
           break;
 
         case 3:
@@ -83,7 +83,7 @@ public class MainScanner {
 
         case 4:
           System.out.println("\n--- CLIENTES CADASTRADOS ---");
-          clienteRepo.listar().forEach(System.out::println);
+          clienteRepo.getLista().forEach(System.out::println);
           break;
 
         case 5:
@@ -105,7 +105,7 @@ public class MainScanner {
             System.out.println("❌ Cliente com o CPF/CNPJ informado não foi encontrado.");
             break;
           }
-          aluguelService.alugar(clienteAluguel, veiculoAluguel);
+          aluguelService.alugarVeiculo(clienteAluguel, veiculoAluguel);
           System.out.println("✅ Aluguel realizado com sucesso!");
           break;
 
@@ -138,7 +138,7 @@ public class MainScanner {
             System.out.println("❌ Cliente com o CPF/CNPJ informado não foi encontrado.");
             break;
           }
-          aluguelService.devolver(clienteDevolucao, veiculoDevolucao);
+          aluguelService.devolverVeiculo(clienteDevolucao, veiculoDevolucao);
           System.out.println("✅ Devolução realizada com sucesso!");
           break;
 

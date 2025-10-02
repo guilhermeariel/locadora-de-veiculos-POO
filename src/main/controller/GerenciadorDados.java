@@ -11,7 +11,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class GerenciadorDados {
@@ -42,9 +41,9 @@ public class GerenciadorDados {
             ArrayList<Veiculo> veiculos = (ArrayList<Veiculo>) ois.readObject();
             ArrayList<Aluguel> alugueis = (ArrayList<Aluguel>) ois.readObject();
 
-            clienteRepositorio.limpar();
-            veiculoRepositorio.limpar();
-            aluguelRepositorio.limpar();
+            clienteRepositorio.limparLista();
+            veiculoRepositorio.limparLista();
+            aluguelRepositorio.limparLista();
 
             clienteRepositorio.adicionarLista(clientes);
             veiculoRepositorio.adicionarLista(veiculos);
