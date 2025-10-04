@@ -12,6 +12,8 @@ import repository.ClienteRepositorio;
 import repository.VeiculoRepositorio;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -34,10 +36,17 @@ public class AluguelServiceImplTest {
     private Cliente cliente;
     private Veiculo veiculo;
 
+    // --- Suppliers para gerar aluguéis ---
+    private Supplier<Aluguel> aluguelAtivoSupplier;
+    private Supplier<Aluguel> aluguelFinalizadoSupplier;
+
     @BeforeEach
     void setUp() {
         cliente = new PessoaFisica("Paula", "12345678901");
         veiculo = new Veiculo("ABC1234", TipoVeiculo.HATCH, "Fiat Uno", true);
+
+        aluguelAtivoSupplier = () -> new Aluguel(cliente, veiculo, LocalDateTime.now().minusDays(1), null);
+        aluguelFinalizadoSupplier = () -> new Aluguel(cliente, veiculo, LocalDateTime.now().minusDays(1), LocalDateTime.now());
     }
 
     // --- ALUGAR VEÍCULO ---
@@ -84,11 +93,11 @@ public class AluguelServiceImplTest {
 
     @Test
     void when_DevolverVeiculoComAluguelAtivo_thenAtualizaAluguelEVeiculo() {
-        Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now().minusDays(1), null);
+        Aluguel aluguel = aluguelAtivoSupplier.get();
 
         when(clienteRepositorio.buscarPorIdentificador(cliente.getIdentificador())).thenReturn(cliente);
         when(veiculoRepositorio.buscarPorIdentificador(veiculo.getIdentificador())).thenReturn(veiculo);
-        when(aluguelRepositorio.buscarPorItem(veiculo, "veiculo")).thenReturn(aluguel);
+        when(aluguelRepositorio.getLista()).thenReturn(List.of(aluguel));
 
         aluguelService.devolverVeiculo(cliente, veiculo);
 
@@ -112,25 +121,32 @@ public class AluguelServiceImplTest {
     }
 
     @Test
-    void when_DevolverVeiculoNaoCadastrado_thenNaoFazNada() {
+    void when_DevolverVeiculoNaoCadastrado_thenThrowException() {
         when(clienteRepositorio.buscarPorIdentificador(cliente.getIdentificador())).thenReturn(cliente);
         when(veiculoRepositorio.buscarPorIdentificador(veiculo.getIdentificador())).thenReturn(null);
 
-        assertDoesNotThrow(() -> aluguelService.devolverVeiculo(cliente, veiculo));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                aluguelService.devolverVeiculo(cliente, veiculo)
+        );
+
+        assertEquals("Veículo inválido ou não cadastrado.", exception.getMessage());
         verify(aluguelRepositorio, never()).atualizar(any());
         verify(veiculoRepositorio, never()).atualizar(any());
     }
 
     @Test
-    void when_DevolverVeiculoSemAluguelAtivo_thenNaoFazNada() {
-        Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now().minusDays(1), LocalDateTime.now());
+    void when_DevolverVeiculoSemAluguelAtivo_thenThrowException() {
+        Aluguel aluguel = aluguelFinalizadoSupplier.get();
 
         when(clienteRepositorio.buscarPorIdentificador(cliente.getIdentificador())).thenReturn(cliente);
         when(veiculoRepositorio.buscarPorIdentificador(veiculo.getIdentificador())).thenReturn(veiculo);
-        when(aluguelRepositorio.buscarPorItem(veiculo, "veiculo")).thenReturn(aluguel);
+        when(aluguelRepositorio.getLista()).thenReturn(List.of(aluguel));
 
-        assertDoesNotThrow(() -> aluguelService.devolverVeiculo(cliente, veiculo));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                aluguelService.devolverVeiculo(cliente, veiculo)
+        );
 
+        assertEquals("Nenhum aluguel ativo encontrado para este veículo.", exception.getMessage());
         verify(aluguelRepositorio, never()).atualizar(any());
         verify(veiculoRepositorio, never()).atualizar(any());
     }

@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import repository.ClienteRepositorio;
 
+import java.util.function.Supplier;
+
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,10 +28,17 @@ public class ClienteServiceImplTest {
     private String cpf;
     private String cnpj;
 
+    // --- Suppliers para gerar clientes de teste ---
+    private Supplier<Cliente> clienteFisicoSupplier;
+    private Supplier<Cliente> clienteJuridicoSupplier;
+
     @BeforeEach
     void setup() {
         cpf = "12345678901";
         cnpj = "12345678000199";
+
+        clienteFisicoSupplier = () -> new PessoaFisica("Paula", cpf);
+        clienteJuridicoSupplier = () -> new PessoaJuridica("Empresa X", cnpj);
     }
 
     // --- CADASTRAR CLIENTE ---
@@ -54,7 +63,7 @@ public class ClienteServiceImplTest {
 
     @Test
     void when_CadastrarClienteComDocumentoDuplicado_thenThrowException() {
-        when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(new PessoaFisica("Paula", cpf));
+        when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(clienteFisicoSupplier.get());
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 clienteService.cadastrarCliente("Eduarda", cpf, true)
@@ -68,13 +77,12 @@ public class ClienteServiceImplTest {
 
     @Test
     void when_BuscarClienteExistente_thenReturnCliente() {
-        PessoaFisica cliente = new PessoaFisica("Paula", cpf);
-        when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(cliente);
+        when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(clienteJuridicoSupplier.get());
 
         Cliente resultado = clienteService.buscarClientePorId(cpf);
 
         assertNotNull(resultado);
-        assertEquals("Paula", resultado.getNome());
+        assertEquals("Empresa X", resultado.getNome());
     }
 
     @Test
@@ -92,7 +100,7 @@ public class ClienteServiceImplTest {
 
     @Test
     void when_AtualizarNomeClienteValido_thenNomeAtualizado() {
-        PessoaFisica cliente = new PessoaFisica("Paula", cpf);
+        Cliente cliente = clienteFisicoSupplier.get();
         when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(cliente);
 
         clienteService.atualizarCliente(cpf, "Paula Nova");
@@ -115,7 +123,7 @@ public class ClienteServiceImplTest {
 
     @Test
     void when_AtualizarNomeClienteComNomeInvalido_thenThrowException() {
-        PessoaFisica cliente = new PessoaFisica("Paula", cpf);
+        Cliente cliente = clienteFisicoSupplier.get();
         when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(cliente);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
@@ -130,7 +138,7 @@ public class ClienteServiceImplTest {
 
     @Test
     void when_RemoverClienteExistente_thenClienteRemovido() {
-        PessoaFisica cliente = new PessoaFisica("Paula", cpf);
+        Cliente cliente = clienteFisicoSupplier.get();
         when(clienteRepositorio.buscarPorIdentificador(cpf)).thenReturn(cliente);
 
         clienteService.removerCliente(cpf);

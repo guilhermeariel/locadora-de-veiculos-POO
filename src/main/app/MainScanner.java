@@ -15,7 +15,7 @@ public class MainScanner {
     ClienteRepositorio clienteRepo = new ClienteRepositorio();
     AluguelRepositorio aluguelRepo = new AluguelRepositorio();
 
-    VeiculoService veiculoService = new VeiculoService(veiculoRepo);
+    VeiculoServiceImpl veiculoServiceImpl = new VeiculoServiceImpl(veiculoRepo);
     ClienteServiceImpl clienteService = new ClienteServiceImpl(clienteRepo);
     AluguelServiceImpl aluguelService = new AluguelServiceImpl(aluguelRepo, veiculoRepo, clienteRepo);
 
@@ -51,7 +51,7 @@ public class MainScanner {
           try {
             TipoVeiculo tipo = TipoVeiculo.valueOf(tipoStr);
             Veiculo novoVeiculo = new Veiculo(placa, tipo, modelo, true);
-            veiculoService.cadastrar(novoVeiculo);
+            veiculoServiceImpl.cadastrar(novoVeiculo);
           } catch (IllegalArgumentException e) {
             System.out.println("❌ Tipo inválido. Use: Hatch, Sedan ou SUV.");
           }
@@ -111,7 +111,7 @@ public class MainScanner {
 
         case 6: //  Listar veículos alugados
           System.out.println("\n--- VEÍCULOS ALUGADOS ---");
-          List<Veiculo> alugados = veiculoService.listarVeiculosAlugados();
+          List<Veiculo> alugados = veiculoServiceImpl.listarVeiculosAlugados();
           if (alugados.isEmpty()) {
             System.out.println("Nenhum veículo está alugado no momento.");
           } else {

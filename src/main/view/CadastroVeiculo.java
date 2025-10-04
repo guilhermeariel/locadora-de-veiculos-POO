@@ -5,16 +5,16 @@ import javafx.scene.control.*;
 import model.TipoVeiculo;
 import model.Veiculo;
 import repository.VeiculoRepositorio;
-import servicos.VeiculoService;
+import servicos.VeiculoServiceImpl;
 
 public class CadastroVeiculo extends AbstractGridMenu{
     private TipoVeiculo tipo;
     private final VeiculoRepositorio repositorio;
-    private final VeiculoService service;
+    private final VeiculoServiceImpl service;
 
     public CadastroVeiculo(VeiculoRepositorio repositorio){
         this.repositorio = repositorio;
-        this.service = new VeiculoService(repositorio);
+        this.service = new VeiculoServiceImpl(repositorio);
     }
 
     @Override

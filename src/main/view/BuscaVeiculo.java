@@ -5,18 +5,18 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import model.Veiculo;
 import repository.VeiculoRepositorio;
-import servicos.VeiculoService;
+import servicos.VeiculoServiceImpl;
 
 import java.util.List;
 
 public class BuscaVeiculo extends AbstractGridMenu{
     private final VeiculoRepositorio repositorio;
-    private final VeiculoService veiculoService;
+    private final VeiculoServiceImpl veiculoServiceImpl;
     private final Atualizador atualizador;
 
     BuscaVeiculo(VeiculoRepositorio repositorio, Atualizador atualizador){
         this.repositorio = repositorio;
-        this.veiculoService = new VeiculoService(repositorio);
+        this.veiculoServiceImpl = new VeiculoServiceImpl(repositorio);
         this.atualizador = atualizador;
     }
 
@@ -56,7 +56,7 @@ public class BuscaVeiculo extends AbstractGridMenu{
         buttonRemover.setOnAction(e -> {
             Veiculo veiculoSelecionado = listaVeiculos.getSelectionModel().getSelectedItem();
             if (veiculoSelecionado != null) {
-                veiculoService.removerVeiculo(veiculoSelecionado.getIdentificador());
+                veiculoServiceImpl.removerVeiculo(veiculoSelecionado.getIdentificador());
                 observableVeiculos.remove(veiculoSelecionado);
             }
         });

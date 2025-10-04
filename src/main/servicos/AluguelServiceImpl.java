@@ -8,14 +8,27 @@ import repository.ClienteRepositorio;
 import repository.VeiculoRepositorio;
 
 import java.time.LocalDateTime;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class AluguelServiceImpl implements AluguelService{
+public class AluguelServiceImpl implements AluguelService {
 
     private final AluguelRepositorio aluguelRepositorio;
     private final VeiculoRepositorio veiculoRepositorio;
     private final ClienteRepositorio clienteRepositorio;
 
-    public AluguelServiceImpl(AluguelRepositorio aluguelRepositorio, VeiculoRepositorio veiculoRepositorio, ClienteRepositorio clienteRepositorio) {
+    // Function para calcular valor do aluguel
+    private final Function<Aluguel, Double> calcularValor = Aluguel::calcularValor;
+
+    // Consumer para imprimir valor formatado
+    private final Consumer<Double> imprimirValor = valor ->
+            System.out.printf("Veículo devolvido com sucesso! Valor total: R$ %.2f\n", valor);
+
+    public AluguelServiceImpl(
+            AluguelRepositorio aluguelRepositorio,
+            VeiculoRepositorio veiculoRepositorio,
+            ClienteRepositorio clienteRepositorio
+    ) {
         this.aluguelRepositorio = aluguelRepositorio;
         this.veiculoRepositorio = veiculoRepositorio;
         this.clienteRepositorio = clienteRepositorio;
@@ -33,8 +46,10 @@ public class AluguelServiceImpl implements AluguelService{
 
         Aluguel aluguel = new Aluguel(cliente, veiculo, LocalDateTime.now(), null);
 
+        // Atualizar disponibilidade do veículo
         veiculo.setDisponivel(false);
         veiculoRepositorio.atualizar(veiculo);
+
         aluguelRepositorio.salvar(aluguel);
     }
 
@@ -45,15 +60,13 @@ public class AluguelServiceImpl implements AluguelService{
         }
 
         if (veiculo == null || veiculoRepositorio.buscarPorIdentificador(veiculo.getIdentificador()) == null) {
-            System.out.println("Veiculo inválido ou não cadastrado.");
-            return;
+            throw new IllegalArgumentException("Veículo inválido ou não cadastrado.");
         }
 
-        Aluguel aluguel = aluguelRepositorio.buscarPorItem(veiculo, "veiculo");
+        Aluguel aluguel = buscarAluguelAtivoDeVeiculo(veiculo);
 
-        if (aluguel == null || aluguel.getDataFim() != null) {
-            System.out.println("Nenhum aluguel ativo encontrado para este veículo.");
-            return;
+        if (aluguel == null) {
+            throw new IllegalArgumentException("Nenhum aluguel ativo encontrado para este veículo.");
         }
 
         aluguel.setDataFim(LocalDateTime.now());
@@ -62,35 +75,16 @@ public class AluguelServiceImpl implements AluguelService{
         aluguelRepositorio.atualizar(aluguel);
         veiculoRepositorio.atualizar(veiculo);
 
-        double valorFinal = aluguel.calcularValor();
-        System.out.printf("Veículo devolvido com sucesso! Valor total: R$ %.2f\n", valorFinal);
+        // Calcular valor e imprimir
+        double valorFinal = calcularValor.apply(aluguel);
+        imprimirValor.accept(valorFinal);
     }
 
-/*    public long calcularDiarias(Aluguel aluguel) {
-        if (aluguel.getDataFim() == null) {
-            System.out.println("Aluguel ainda não foi finalizado.");
-            return 0;
-        }
-
-        return ChronoUnit.DAYS.between(
-                aluguel.getDataInicio().toLocalDate(),
-                aluguel.getDataFim().toLocalDate()
-        );
+    private Aluguel buscarAluguelAtivoDeVeiculo(Veiculo veiculo) {
+        return aluguelRepositorio.getLista().stream()
+                .filter(a -> a.getVeiculo().getIdentificador().equals(veiculo.getIdentificador())
+                        && a.getDataFim() == null)
+                .findFirst()
+                .orElse(null);
     }
-
-    public void aplicarDesconto(Aluguel aluguel) {
-        double valorComDesconto = aluguel.calcularValor();
-        System.out.printf("Valor com desconto aplicado: R$ %.2f\n", valorComDesconto);
-    }
-
-    public void registrarAluguel(Aluguel aluguel) {
-        if (!aluguel.getVeiculo().isDisponivel()) {
-            System.out.println("Veículo indisponível para aluguel.");
-            return;
-        }
-
-        aluguel.getVeiculo().setDisponivel(false);
-        aluguelRepositorio.salvar(aluguel);
-        System.out.println("Aluguel registrado com sucesso!");
-    }*/
 }
