@@ -45,5 +45,38 @@ Projeto desenvolvido para aplicar os conceitos fundamentais de **Programação O
 
 ---
 
-## 📦 Estrutura de Pacotes
+## Refatoraçao Funcional (versao 1.1)
+
+Projeto refatorado para aplicar conceitos de **Java Funcional**, incluindo Streams, Comparator, lambdas, Predicate, Function, Consumer, Supplier, Files, InputStream/OutputStream e interfaces funcionais.
+
+---
+
+## Refatorações realizadas
+
+1. **Streams**
+   - Filtragem de veículos alugados e aluguéis ativos usando `.stream().filter()`.
+   - Paginação preparada com `skip()` e `limit()` (planejado para próximas implementações).
+
+2. **Interfaces Funcionais**
+   - **Function**: cálculo de valor de aluguel e criação de novos objetos (Veículo).
+   - **Predicate**: validação de CPF, CNPJ e placas.
+   - **Consumer**: logs formatados de cadastro, busca, devolução e remoção.
+   - **Supplier**: geração de dados de teste nos testes unitários.
+
+---
+
+## Principais melhorias percebidas
+
+- Código mais **limpo e conciso** com operações funcionais.
+- Maior **reutilização de lógica**, evitando duplicação de validações e logs.
+- Testes unitários mais **padronizados**, utilizando **Supplier** e mocks consistentes.
+- Preparação para **futuras implementações de Streams e paginação**.
+- Logs e mensagens de operação centralizados via `Consumer`.
+
+---
+  
+## 🔹 Dificuldades enfrentadas
+
+- Decidir **quando criar Supplier**.
+- Adaptar métodos existentes para o padrão funcional sem quebrar a lógica de negócio.
 
