@@ -66,6 +66,14 @@ Projeto refatorado para aplicar conceitos de **Java Funcional**, incluindo Strea
    - Supplier: utilizado para gerar instâncias de objetos de forma padronizada e reutilizável nos testes (Cliente, Veículo, Aluguel).
    - Consumer: utilizado para validar execuções de ações como salvar, atualizar e remover, simulando logs e callbacks centralizados.
 
+4. **Paginaçao e Ordenaçao**
+   - Paginação genérica e funcional baseada em: número da página; quantidade de itens por página; ordenação crescente ou decrescente.
+   - Implementação genérica através da classe utilitária PaginacaoUtil.
+   - Métodos de fácil uso nos repositórios:
+     - buscarClientesPaginadosEOrdenados(int pagina, int tamanhoPagina, boolean ascendente)
+     - buscarVeiculosPaginadosEOrdenados(int pagina, int tamanhoPagina, boolean ascendente)
+     - buscarAlugueisPaginadosEOrdenados(int pagina, int tamanhoPagina, boolean ascendente)
+
 ---
 
 ## Principais melhorias percebidas
@@ -81,8 +89,9 @@ Projeto refatorado para aplicar conceitos de **Java Funcional**, incluindo Strea
 
 ---
   
-## 🔹 Dificuldades enfrentadas
+## Dificuldades enfrentadas
 
 - Decidir **quando criar Supplier**.
 - Adaptar métodos existentes para o padrão funcional sem quebrar a lógica de negócio.
+- Pensar numa paginaçao genérica e reutilizável.
 
