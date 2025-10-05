@@ -1,45 +1,40 @@
 package utils;
 
+import java.util.regex.Pattern;
+
 public class Validator {
 
-    public static boolean validarNome(String nome) {
-        if (nome == null || nome.trim().isEmpty()) return false;
+    private Validator() { /* classe utilitária */ }
 
-        // letras, acentos e espaços
-        return nome.matches("[A-Za-zÀ-ÿ ]+");
+    // Regex compiladas para performance
+    private static final Pattern NOME_REGEX = Pattern.compile("[A-Za-zÀ-ÿ ]+");
+    private static final Pattern PLACA_REGEX = Pattern.compile("^[A-Z]{3}-?\\d{4}$|^[A-Z]{3}\\d[A-Z]\\d{2}$");
+
+    public static boolean validarNome(String nome) {
+        if (nome == null) return false;
+        String trimmed = nome.trim();
+        return !trimmed.isEmpty() && NOME_REGEX.matcher(trimmed).matches();
     }
 
     // ==================== CPF/CNPJ ====================
+    private static boolean validarNumeros(String input, int tamanhoEsperado) {
+        if (input == null) return false;
+        String numeros = input.replaceAll("\\D", ""); // remove tudo que não é dígito
+        return numeros.length() == tamanhoEsperado;
+    }
+
     public static boolean validarCPF(String cpf) {
-        if (cpf == null) return false;
-
-        // Remove pontos e traços
-        String somenteNumeros = cpf.replaceAll("[\\.\\-]", "");
-
-        // Verifica se tem exatamente 11 dígitos
-        return somenteNumeros.matches("\\d{11}");
+        return validarNumeros(cpf, 11);
     }
 
     public static boolean validarCNPJ(String cnpj) {
-        if (cnpj == null) return false;
-
-        // Remove pontos, barras e traço
-        String somenteNumeros = cnpj.replaceAll("[\\.\\-/]", "");
-
-        // Verifica se tem exatamente 14 dígitos
-        return somenteNumeros.matches("\\d{14}");
+        return validarNumeros(cnpj, 14);
     }
 
     // ==================== Placa de Veículo ====================
     public static boolean validarPlaca(String placa) {
         if (placa == null) return false;
-
-        // Remove possíveis espaços extras
         String normalizada = placa.trim().toUpperCase();
-
-        // Regex que aceita tanto padrão antigo (AAA-1234) quanto Mercosul (AAA1A23)
-        String regex = "^[A-Z]{3}-?\\d{4}$|^[A-Z]{3}\\d[A-Z]\\d{2}$";
-
-        return normalizada.matches(regex);
+        return PLACA_REGEX.matcher(normalizada).matches();
     }
 }
