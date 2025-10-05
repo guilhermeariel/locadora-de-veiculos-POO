@@ -5,12 +5,15 @@ import model.PessoaFisica;
 import model.PessoaJuridica;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.PaginacaoUtil;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ClienteRepositorioTest {
 
@@ -219,5 +222,48 @@ public class ClienteRepositorioTest {
         clienteRepo.removerItem(cliente);
 
         assertTrue(log.toString().contains(cliente.getIdentificador()));
+    }
+
+    // ------------------------------
+    // Teste de Paginaçao e Ordenaçao
+    // ------------------------------
+
+    @Test
+    void when_BuscarClientesPaginadosEOrdenados_PaginacaoFuncionaCorretamente() {
+        // Supplier que gera clientes unicos
+        Supplier<Cliente> clienteSupplier = new Supplier<>() {
+            private int contador = 1;
+            @Override
+            public Cliente get() {
+                String nome = "Cliente" + String.format("%02d", contador);
+                String cpf = String.format("%011d", contador++);
+                return new PessoaFisica(nome, cpf);
+            }
+        };
+
+        // Cria lista de 10 clientes
+        List<Cliente> listaDeTeste = Stream.generate(clienteSupplier)
+                .limit(10)
+                .collect(Collectors.toList());
+
+        // Página 1, 3 itens por página, ascendente
+        List<Cliente> pagina1 = PaginacaoUtil.paginar(listaDeTeste, 1, 3, Cliente::getNome, true);
+        assertEquals(3, pagina1.size());
+        assertEquals("Cliente01", pagina1.getFirst().getNome());
+
+        // Página 2, 3 itens por página, ascendente
+        List<Cliente> pagina2 = PaginacaoUtil.paginar(listaDeTeste, 2, 3, Cliente::getNome, true);
+        assertEquals(3, pagina2.size());
+        assertEquals("Cliente04", pagina2.getFirst().getNome());
+
+        // Página 4, 3 itens por página (última página com 1 item), ascendente
+        List<Cliente> pagina4 = PaginacaoUtil.paginar(listaDeTeste, 4, 3, Cliente::getNome, true);
+        assertEquals(1, pagina4.size());
+        assertEquals("Cliente10", pagina4.getFirst().getNome());
+
+        // Página 1, descendente (total 10 itens)
+        List<Cliente> desc = PaginacaoUtil.paginar(listaDeTeste, 1, 3, Cliente::getNome, false);
+        assertEquals(3, desc.size());
+        assertEquals("Cliente10", desc.getFirst().getNome());
     }
 }

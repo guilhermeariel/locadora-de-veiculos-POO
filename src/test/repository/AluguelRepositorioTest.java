@@ -3,6 +3,7 @@ package repository;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.PaginacaoUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 class AluguelRepositorioTest {
 
@@ -242,5 +244,77 @@ class AluguelRepositorioTest {
         aluguelRepo.removerItem(aluguel);
 
         assertTrue(log.toString().contains(String.valueOf(aluguel.getIdentificador())));
+    }
+
+    // ------------------------------
+    // Teste de Paginaçao e Ordenaçao
+    // ------------------------------
+
+    @Test
+    void when_BuscarAlugueisPaginadosEOrdenados_PaginacaoFuncionaCorretamente() {
+        // Supplier de clientes
+        Supplier<Aluguel> aluguelSupplier = getAluguelSupplier();
+
+        // Cria 10 aluguéis de teste
+        List<Aluguel> listaDeTeste = Stream.generate(aluguelSupplier)
+                .limit(10)
+                .toList();
+
+        // Página 1, 3 itens por página, ascendente (data início)
+        List<Aluguel> pagina1 = PaginacaoUtil.paginar(listaDeTeste, 1, 3, Aluguel::getDataInicio, true);
+        assertEquals(3, pagina1.size());
+        assertEquals(listaDeTeste.getFirst().getCliente().getNome(), pagina1.getFirst().getCliente().getNome());
+
+        // Página 2, 3 itens por página, ascendente
+        List<Aluguel> pagina2 = PaginacaoUtil.paginar(listaDeTeste, 2, 3, Aluguel::getDataInicio, true);
+        assertEquals(3, pagina2.size());
+        assertEquals(listaDeTeste.get(3).getCliente().getNome(), pagina2.getFirst().getCliente().getNome());
+
+        // Página 4, 3 itens por página (última página com 1 item), ascendente
+        List<Aluguel> pagina4 = PaginacaoUtil.paginar(listaDeTeste, 4, 3, Aluguel::getDataInicio, true);
+        assertEquals(1, pagina4.size());
+        assertEquals(listaDeTeste.get(9).getCliente().getNome(), pagina4.getFirst().getCliente().getNome());
+
+        // Página 1, descendente (total 10 itens), descendente
+        List<Aluguel> desc = PaginacaoUtil.paginar(listaDeTeste, 1, 3, Aluguel::getDataInicio, false);
+        assertEquals(3, desc.size());
+        assertEquals(listaDeTeste.get(9).getCliente().getNome(), desc.getFirst().getCliente().getNome());
+    }
+
+    private static Supplier<Aluguel> getAluguelSupplier() {
+        Supplier<Cliente> clienteSupplier = new Supplier<>() {
+            private int contador = 1;
+            @Override
+            public Cliente get() {
+                String nome = String.format("Cliente%02d", contador);
+                String cpf = String.format("%011d", contador++);
+                return new PessoaFisica(nome, cpf);
+            }
+        };
+
+        // Supplier de veículos
+        Supplier<Veiculo> veiculoSupplier = new Supplier<>() {
+            private int contador = 1;
+            @Override
+            public Veiculo get() {
+                String placa = String.format("AAA%04d", contador);
+                String modelo = "Modelo" + contador++;
+                return new Veiculo(placa, TipoVeiculo.HATCH, modelo, true);
+            }
+        };
+
+        // Supplier de aluguéis
+        return new Supplier<>() {
+            private int contador = 0;
+            @Override
+            public Aluguel get() {
+                Cliente cliente1 = clienteSupplier.get();
+                Veiculo veiculo1 = veiculoSupplier.get();
+                LocalDateTime inicio = LocalDateTime.now().plusDays(contador);
+                LocalDateTime fim = inicio.plusDays(1);
+                contador++;
+                return new Aluguel(cliente1, veiculo1, inicio, fim);
+            }
+        };
     }
 }

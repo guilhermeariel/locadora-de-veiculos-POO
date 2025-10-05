@@ -1,7 +1,9 @@
 package repository;
 
 import model.Cliente;
+import utils.PaginacaoUtil;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 public class ClienteRepositorio extends RepositorioMemoria<Cliente, String> {
@@ -29,5 +31,9 @@ public class ClienteRepositorio extends RepositorioMemoria<Cliente, String> {
 
         lista.stream().filter(filtro).forEach(filtrado::salvar);
         return filtrado;
+    }
+
+    public List<Cliente> buscarClientesPaginadosEOrdenados(int pagina, int tamanhoPagina, boolean ascendente) {
+        return PaginacaoUtil.paginar(lista, pagina, tamanhoPagina, Cliente::getNome, ascendente);
     }
 }

@@ -1,6 +1,7 @@
 package repository;
 
 import model.Veiculo;
+import utils.PaginacaoUtil;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -38,5 +39,9 @@ public class VeiculoRepositorio extends RepositorioMemoria<Veiculo, String> {
         return lista.stream()
             .filter(Veiculo::isDisponivel)
             .collect(Collectors.toList());
+    }
+
+    public List<Veiculo> buscarVeiculosPaginadosEOrdenados(int pagina, int tamanhoPagina, boolean ascendente) {
+        return PaginacaoUtil.paginar(lista, pagina, tamanhoPagina, Veiculo::getModelo, ascendente);
     }
 }

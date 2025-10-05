@@ -1,7 +1,9 @@
 package repository;
 
 import model.Aluguel;
+import utils.PaginacaoUtil;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 public class AluguelRepositorio extends RepositorioMemoria<Aluguel, Integer> {
@@ -46,5 +48,9 @@ public class AluguelRepositorio extends RepositorioMemoria<Aluguel, Integer> {
                     .findFirst().orElse(null);
             default -> null;
         };
+    }
+
+    public List<Aluguel> buscarAlugueisPaginadosEOrdenados(int pagina, int tamanhoPagina, boolean ascendente) {
+        return PaginacaoUtil.paginar(lista, pagina, tamanhoPagina, Aluguel::getDataInicio, ascendente);
     }
 }

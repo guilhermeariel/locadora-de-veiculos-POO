@@ -3,9 +3,12 @@ package repository;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import utils.PaginacaoUtil;
 
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -234,5 +237,49 @@ public class VeiculoRepositorioTest {
         veiculoRepo.removerItem(veiculo);
 
         assertTrue(log.toString().contains(veiculo.getPlaca()));
+    }
+
+    // ------------------------------
+    // Teste de Paginaçao e Ordenaçao
+    // ------------------------------
+
+    @Test
+    void when_BuscarVeiculosPaginadosEOrdenados_PaginacaoFuncionaCorretamente() {
+        // Supplier que gera veículos únicos
+        Supplier<Veiculo> veiculoSupplier = new Supplier<>() {
+            private int contador = 1;
+            @Override
+            public Veiculo get() {
+                String placa = String.format("AAA%04d", contador);
+                String modelo = "Modelo" + String.format("%02d", contador++);
+                TipoVeiculo tipo = TipoVeiculo.HATCH;
+                return new Veiculo(placa, tipo, modelo, true);
+            }
+        };
+
+        // Cria lista de 10 veículos
+        List<Veiculo> listaDeTeste = Stream.generate(veiculoSupplier)
+                .limit(10)
+                .collect(Collectors.toList());
+
+        // Página 1, 3 itens por página, ascendente
+        List<Veiculo> pagina1 = PaginacaoUtil.paginar(listaDeTeste, 1, 3, Veiculo::getModelo, true);
+        assertEquals(3, pagina1.size());
+        assertEquals("Modelo01", pagina1.getFirst().getModelo());
+
+        // Página 2, 3 itens por página, ascendente
+        List<Veiculo> pagina2 = PaginacaoUtil.paginar(listaDeTeste, 2, 3, Veiculo::getModelo, true);
+        assertEquals(3, pagina2.size());
+        assertEquals("Modelo04", pagina2.getFirst().getModelo());
+
+        // Página 4, 3 itens por página (última página com 1 item), ascendente
+        List<Veiculo> pagina4 = PaginacaoUtil.paginar(listaDeTeste, 4, 3, Veiculo::getModelo, true);
+        assertEquals(1, pagina4.size());
+        assertEquals("Modelo10", pagina4.getFirst().getModelo());
+
+        // Página 1, descendente
+        List<Veiculo> desc = PaginacaoUtil.paginar(listaDeTeste, 1, 3, Veiculo::getModelo, false);
+        assertEquals(3, desc.size());
+        assertEquals("Modelo10", desc.getFirst().getModelo());
     }
 }
