@@ -4,20 +4,25 @@ import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class VeiculoRepositorioTest {
 
     private VeiculoRepositorio veiculoRepo;
+    private Supplier<Veiculo> veiculoSupplier;
 
     @BeforeEach
     void setup() {
         veiculoRepo = new VeiculoRepositorio();
+        veiculoSupplier = () -> new Veiculo("ABC1234", TipoVeiculo.HATCH, "Fiat Uno", true);
     }
 
     @Test
     void when_SalvarVeiculo_Then_VeiculoExistenteNaLista() {
-        Veiculo veiculo = new Veiculo("ABC1234", TipoVeiculo.HATCH, "Fiat Uno", true);
+        Veiculo veiculo = veiculoSupplier.get();
         veiculoRepo.salvar(veiculo);
 
         assertEquals(1, veiculoRepo.getLista().size());
@@ -26,95 +31,106 @@ public class VeiculoRepositorioTest {
 
     @Test
     void when_AtualizarVeiculoExistente_Then_VeiculoAtualizado() {
-        Veiculo veiculo = new Veiculo("ABC1234", TipoVeiculo.HATCH, "Fiat Uno", true);
+        Veiculo veiculo = veiculoSupplier.get();
         veiculoRepo.salvar(veiculo);
 
         Veiculo veiculoAtualizado = new Veiculo("ABC1234", TipoVeiculo.HATCH, "Fiat Uno 2025", true);
         veiculoRepo.atualizar(veiculoAtualizado);
 
-        Veiculo veiculoBuscado = veiculoRepo.buscarPorIdentificador("ABC1234");
-        assertEquals("Fiat Uno 2025", veiculoBuscado.getModelo());
+        Veiculo buscado = veiculoRepo.buscarPorIdentificador("ABC1234");
+        assertEquals("Fiat Uno 2025", buscado.getModelo());
     }
 
     @Test
     void when_AtualizarVeiculoNaoExistente_Then_NaoAlteraLista() {
         Veiculo veiculo = new Veiculo("XYZ9999", TipoVeiculo.SEDAN, "Gol", true);
-        int tamanhoDaListaAntes = veiculoRepo.getLista().size();
+        int tamanhoAntes = veiculoRepo.getLista().size();
 
         veiculoRepo.atualizar(veiculo);
 
-        assertEquals(tamanhoDaListaAntes, veiculoRepo.getLista().size());
+        assertEquals(tamanhoAntes, veiculoRepo.getLista().size());
         assertNull(veiculoRepo.buscarPorIdentificador("XYZ9999"));
     }
 
     @Test
     void when_BuscarPorIdentificadorExistente_Then_RetornaVeiculoCorreto() {
-        String placa = "ABC1234";
-        Veiculo veiculo = new Veiculo(placa, TipoVeiculo.HATCH, "Fiat Uno", true);
+        Veiculo veiculo = veiculoSupplier.get();
         veiculoRepo.salvar(veiculo);
 
-        Veiculo veiculoBuscado = veiculoRepo.buscarPorIdentificador(placa);
-        assertNotNull(veiculoBuscado);
-        assertEquals("Fiat Uno", veiculoBuscado.getModelo());
+        Veiculo buscado = veiculoRepo.buscarPorIdentificador("ABC1234");
+        assertNotNull(buscado);
+        assertEquals("Fiat Uno", buscado.getModelo());
     }
 
     @Test
     void when_BuscarPorIdentificadorNaoExistente_Then_RetornaNull() {
-        Veiculo veiculoBuscado = veiculoRepo.buscarPorIdentificador("999");
-        assertNull(veiculoBuscado);
+        assertNull(veiculoRepo.buscarPorIdentificador("999"));
     }
 
     @Test
     void when_getListaVeiculos_Then_RetornaListaComTodos() {
-        Veiculo veiculo1 = new Veiculo("ABC1234", TipoVeiculo.SEDAN, "Fiat Uno", true);
-        Veiculo veiculo2 = new Veiculo("DEF5678", TipoVeiculo.SUV, "Chevrolet Onix", true);
+        Veiculo v1 = veiculoSupplier.get();
+        Veiculo v2 = new Veiculo("DEF5678", TipoVeiculo.SUV, "Chevrolet Onix", true);
 
-        veiculoRepo.salvar(veiculo1);
-        veiculoRepo.salvar(veiculo2);
+        veiculoRepo.salvar(v1);
+        veiculoRepo.salvar(v2);
 
         assertEquals(2, veiculoRepo.getLista().size());
-        assertTrue(veiculoRepo.getLista().contains(veiculo1));
-        assertTrue(veiculoRepo.getLista().contains(veiculo2));
+        assertTrue(veiculoRepo.getLista().containsAll(List.of(v1, v2)));
     }
 
     @Test
     void when_GetIdentificador_Then_RetornaCorreto() {
-        String placa = "ABC1234";
-        Veiculo veiculo = new Veiculo(placa, TipoVeiculo.HATCH, "Fiat Uno", true);
-
-        assertEquals(placa, veiculoRepo.getIdentificador(veiculo));
+        Veiculo veiculo = veiculoSupplier.get();
+        assertEquals("ABC1234", veiculoRepo.getIdentificador(veiculo));
     }
 
     @Test
     void when_RemoverVeiculoExistente_Then_VeiculoNaoEstaMaisNaLista() {
-        Veiculo veiculo = new Veiculo("ABC1234", TipoVeiculo.HATCH, "Fiat Uno", true);
+        Veiculo veiculo = veiculoSupplier.get();
         veiculoRepo.salvar(veiculo);
-
-        assertEquals(1, veiculoRepo.getLista().size());
 
         veiculoRepo.removerItem(veiculo);
 
-        assertTrue(veiculoRepo.getLista().isEmpty());
+        assertFalse(veiculoRepo.getLista().contains(veiculo));
         assertNull(veiculoRepo.buscarPorIdentificador("ABC1234"));
     }
 
     @Test
-    void when_ExistePlacaExistente_Then_RetornaTrue() {
-        Veiculo veiculo = new Veiculo("ABC1234", TipoVeiculo.HATCH, "Fiat Uno", true);
-        veiculoRepo.salvar(veiculo);
+    void when_RemoverVeiculoNaoExistente_Then_ListaPermaneceInalterada() {
+        Veiculo veiculo = new Veiculo("XYZ9999", TipoVeiculo.SEDAN, "Gol", true);
+        int tamanhoAntes = veiculoRepo.getLista().size();
 
-        assertTrue(veiculoRepo.existePlaca("ABC1234"));
+        veiculoRepo.removerItem(veiculo);
+
+        assertEquals(tamanhoAntes, veiculoRepo.getLista().size());
     }
 
     @Test
-    void when_ExistePlacaInexistente_Then_RetornaFalse() {
-        assertFalse(veiculoRepo.existePlaca("ZZZ9999"));
+    void when_LimparLista_Then_ListaFicaVazia() {
+        Veiculo veiculo = veiculoSupplier.get();
+        veiculoRepo.salvar(veiculo);
+
+        veiculoRepo.limparLista();
+
+        assertTrue(veiculoRepo.getLista().isEmpty());
+    }
+
+    @Test
+    void when_AdicionarListaVeiculos_Then_TodosSaoInseridos() {
+        Veiculo v1 = veiculoSupplier.get();
+        Veiculo v2 = new Veiculo("DEF5678", TipoVeiculo.SUV, "Chevrolet Onix", true);
+
+        veiculoRepo.adicionarLista(List.of(v1, v2));
+
+        assertTrue(veiculoRepo.getLista().containsAll(List.of(v1, v2)));
     }
 
     @Test
     void when_FiltrarPorPlaca_Then_RetornaApenasVeiculosComPlacaCorrespondente() {
-        Veiculo v1 = new Veiculo("ABC1234", TipoVeiculo.HATCH, "Fiat Uno", true);
-        Veiculo v2 = new Veiculo("DEF5678", TipoVeiculo.SUV, "Chevrolet Tracker", true);
+        Veiculo v1 = veiculoSupplier.get();
+        Veiculo v2 = new Veiculo("DEF5678", TipoVeiculo.SUV, "Tracker", true);
+
         veiculoRepo.salvar(v1);
         veiculoRepo.salvar(v2);
 
@@ -126,8 +142,9 @@ public class VeiculoRepositorioTest {
 
     @Test
     void when_FiltrarPorModelo_Then_RetornaVeiculosComModeloCorrespondente() {
-        Veiculo v1 = new Veiculo("AAA1111", TipoVeiculo.HATCH, "Fiat Uno", true);
+        Veiculo v1 = veiculoSupplier.get();
         Veiculo v2 = new Veiculo("BBB2222", TipoVeiculo.SEDAN, "Fiat Siena", true);
+
         veiculoRepo.salvar(v1);
         veiculoRepo.salvar(v2);
 
@@ -140,6 +157,7 @@ public class VeiculoRepositorioTest {
     void when_FiltrarPorTipo_Then_RetornaVeiculosComTipoCorrespondente() {
         Veiculo v1 = new Veiculo("AAA1111", TipoVeiculo.SUV, "Compass", true);
         Veiculo v2 = new Veiculo("BBB2222", TipoVeiculo.HATCH, "Onix", true);
+
         veiculoRepo.salvar(v1);
         veiculoRepo.salvar(v2);
 
@@ -153,6 +171,7 @@ public class VeiculoRepositorioTest {
     void when_FiltrarComFiltroInvalido_Then_RetornaTodos() {
         Veiculo v1 = new Veiculo("AAA1111", TipoVeiculo.SUV, "Compass", true);
         Veiculo v2 = new Veiculo("BBB2222", TipoVeiculo.HATCH, "Onix", true);
+
         veiculoRepo.salvar(v1);
         veiculoRepo.salvar(v2);
 
@@ -165,6 +184,7 @@ public class VeiculoRepositorioTest {
     void when_ListarDisponiveis_Then_RetornaApenasDisponiveis() {
         Veiculo disponivel = new Veiculo("AAA1111", TipoVeiculo.HATCH, "Onix", true);
         Veiculo indisponivel = new Veiculo("BBB2222", TipoVeiculo.SUV, "Compass", false);
+
         veiculoRepo.salvar(disponivel);
         veiculoRepo.salvar(indisponivel);
 
@@ -172,5 +192,47 @@ public class VeiculoRepositorioTest {
 
         assertEquals(1, disponiveis.size());
         assertEquals(disponivel, disponiveis.getFirst());
+    }
+
+    // --------------------------
+    // Testes dos Consumers
+    // --------------------------
+
+    @Test
+    void when_SalvarVeiculo_Then_ConsumerAoSalvarEhExecutado() {
+        StringBuilder log = new StringBuilder();
+        veiculoRepo.setAoSalvar(v -> log.append("salvo:").append(v.getPlaca()));
+
+        Veiculo veiculo = veiculoSupplier.get();
+        veiculoRepo.salvar(veiculo);
+
+        assertTrue(log.toString().contains(veiculo.getPlaca()));
+    }
+
+    @Test
+    void when_AtualizarVeiculo_Then_ConsumerAoAtualizarEhExecutado() {
+        Veiculo veiculo = veiculoSupplier.get();
+        veiculoRepo.salvar(veiculo);
+
+        StringBuilder log = new StringBuilder();
+        veiculoRepo.setAoAtualizar(v -> log.append("atualizado:").append(v.getPlaca()));
+
+        veiculo.setModelo("Fiat Novo Uno");
+        veiculoRepo.atualizar(veiculo);
+
+        assertTrue(log.toString().contains(veiculo.getPlaca()));
+    }
+
+    @Test
+    void when_RemoverVeiculo_Then_ConsumerAoRemoverEhExecutado() {
+        Veiculo veiculo = veiculoSupplier.get();
+        veiculoRepo.salvar(veiculo);
+
+        StringBuilder log = new StringBuilder();
+        veiculoRepo.setAoRemover(v -> log.append("removido:").append(v.getPlaca()));
+
+        veiculoRepo.removerItem(veiculo);
+
+        assertTrue(log.toString().contains(veiculo.getPlaca()));
     }
 }

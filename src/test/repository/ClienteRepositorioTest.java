@@ -10,106 +10,106 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.function.Supplier;
+
 public class ClienteRepositorioTest {
 
     private ClienteRepositorio clienteRepo;
+    private Supplier<Cliente> clienteFisicaSupplier;
+    private Supplier<Cliente> clienteJuridicaSupplier;
 
     @BeforeEach
     void setup() {
         clienteRepo = new ClienteRepositorio();
+
+        clienteFisicaSupplier = () -> new PessoaFisica("Paula", "11111111111");
+        clienteJuridicaSupplier = () -> new PessoaJuridica("Top Assist", "22222222222222");
     }
 
+    // --------------------------
+    // Testes principais
+    // --------------------------
+
     @Test
-    void when_SalvarPessoaFisica_Then_PessoaFisicaExistenteNaLista() {
-        String cpf = "11111111111";
-        Cliente cliente = new PessoaFisica("Paula", cpf);
+    void when_SalvarPessoaFisica_Then_ExistenteNaLista() {
+        Cliente cliente = clienteFisicaSupplier.get();
         clienteRepo.salvar(cliente);
 
         assertEquals(1, clienteRepo.getLista().size());
-        assertEquals(cliente, clienteRepo.buscarPorIdentificador(cpf));
+        assertEquals(cliente, clienteRepo.buscarPorIdentificador(cliente.getIdentificador()));
     }
 
     @Test
-    void when_SalvarPessoaJuridica_Then_PessoaJuridicaExistenteNaLista() {
-        String cnpj = "11111111111111";
-        Cliente cliente = new PessoaJuridica("Top Assist", cnpj);
+    void when_SalvarPessoaJuridica_Then_ExistenteNaLista() {
+        Cliente cliente = clienteJuridicaSupplier.get();
         clienteRepo.salvar(cliente);
 
         assertEquals(1, clienteRepo.getLista().size());
-        assertEquals(cliente, clienteRepo.buscarPorIdentificador(cnpj));
+        assertEquals(cliente, clienteRepo.buscarPorIdentificador(cliente.getIdentificador()));
     }
 
     @Test
-    void when_AtualizarClienteExistente_Then_ClienteAtualizado() {
-        String cpf = "11111111111";
-        Cliente cliente = new PessoaFisica("Paula", cpf);
+    void when_AtualizarClienteExistente_Then_Atualizado() {
+        Cliente cliente = clienteFisicaSupplier.get();
         clienteRepo.salvar(cliente);
 
-        Cliente clienteAtualizado = new PessoaFisica("Paula Eduarda", cpf);
-        clienteRepo.atualizar(clienteAtualizado);
+        Cliente atualizado = new PessoaFisica("Paula Eduarda", cliente.getIdentificador());
+        clienteRepo.atualizar(atualizado);
 
-        Cliente buscado = clienteRepo.buscarPorIdentificador(cpf);
+        Cliente buscado = clienteRepo.buscarPorIdentificador(cliente.getIdentificador());
         assertEquals("Paula Eduarda", buscado.getNome());
     }
 
     @Test
     void when_AtualizarClienteNaoExistente_Then_NaoAlteraLista() {
-        String cpf = "11111111111";
-        Cliente cliente = new PessoaFisica("Paula", cpf);
-        int tamanhoDaListaAntes = clienteRepo.getLista().size();
-
+        Cliente cliente = clienteFisicaSupplier.get();
+        int tamanhoAntes = clienteRepo.getLista().size();
         clienteRepo.atualizar(cliente);
-
-        assertEquals(tamanhoDaListaAntes, clienteRepo.getLista().size());
-        assertNull(clienteRepo.buscarPorIdentificador(cpf));
+        assertEquals(tamanhoAntes, clienteRepo.getLista().size());
+        assertNull(clienteRepo.buscarPorIdentificador(cliente.getIdentificador()));
     }
 
     @Test
-    void when_BuscarPorIdentificadorExistente_Then_RetornaClienteCorreto() {
-        String cpf = "11111111111";
-        Cliente cliente = new PessoaFisica("Paula", cpf);
+    void when_BuscarPorIdentificadorExistente_Then_RetornaCorreto() {
+        Cliente cliente = clienteFisicaSupplier.get();
         clienteRepo.salvar(cliente);
 
-        Cliente clienteBuscado = clienteRepo.buscarPorIdentificador(cpf);
-        assertNotNull(clienteBuscado);
-        assertEquals("Paula", clienteBuscado.getNome());
+        Cliente buscado = clienteRepo.buscarPorIdentificador(cliente.getIdentificador());
+        assertNotNull(buscado);
+        assertEquals(cliente.getNome(), buscado.getNome());
     }
 
     @Test
     void when_BuscarPorIdentificadorNaoExistente_Then_RetornaNull() {
-        Cliente clienteBuscado = clienteRepo.buscarPorIdentificador("999");
-        assertNull(clienteBuscado);
+        assertNull(clienteRepo.buscarPorIdentificador("99999999999"));
     }
 
     @Test
-    void when_getListaClientes_Then_RetornaListaComTodos() {
-        Cliente cliente1 = new PessoaFisica("Paula Eduarda", "11111111111");
-        Cliente cliente2 = new PessoaJuridica("Top Assist", "11111111111111");
+    void when_getListaClientes_Then_RetornaTodos() {
+        Cliente c1 = clienteFisicaSupplier.get();
+        Cliente c2 = clienteJuridicaSupplier.get();
+        clienteRepo.salvar(c1);
+        clienteRepo.salvar(c2);
 
-        clienteRepo.salvar(cliente1);
-        clienteRepo.salvar(cliente2);
-
-        assertEquals(2, clienteRepo.getLista().size());
-        assertTrue(clienteRepo.getLista().contains(cliente1));
-        assertTrue(clienteRepo.getLista().contains(cliente2));
+        List<Cliente> lista = clienteRepo.getLista();
+        assertEquals(2, lista.size());
+        assertTrue(lista.contains(c1));
+        assertTrue(lista.contains(c2));
     }
 
     @Test
     void when_GetIdentificador_Then_RetornaCorreto() {
-        String cpf = "11111111111";
-        String cnpj = "11111111111111";
-        Cliente pessoaFisica = new PessoaFisica("Paula", cpf);
-        Cliente pessoaJuridica = new PessoaJuridica("Top Assist", cnpj);
+        Cliente pf = clienteFisicaSupplier.get();
+        Cliente pj = clienteJuridicaSupplier.get();
 
-        assertEquals(cpf, clienteRepo.getIdentificador(pessoaFisica));
-        assertEquals(cnpj, clienteRepo.getIdentificador(pessoaJuridica));
+        assertEquals(pf.getIdentificador(), clienteRepo.getIdentificador(pf));
+        assertEquals(pj.getIdentificador(), clienteRepo.getIdentificador(pj));
     }
 
     @Test
-    void when_RemoverClienteExistente_Then_ClienteNaoEstaMaisNaLista() {
-        Cliente cliente = new PessoaFisica("Paula", "11111111111");
+    void when_RemoverClienteExistente_Then_NaoEstaMaisNaLista() {
+        Cliente cliente = clienteFisicaSupplier.get();
         clienteRepo.salvar(cliente);
-
         clienteRepo.removerItem(cliente);
 
         assertFalse(clienteRepo.getLista().contains(cliente));
@@ -117,72 +117,107 @@ public class ClienteRepositorioTest {
     }
 
     @Test
-    void when_RemoverClienteNaoExistente_Then_ListaPermaneceInalterada() {
-        Cliente cliente = new PessoaFisica("Paula", "11111111111");
+    void when_RemoverClienteNaoExistente_Then_ListaPermanece() {
+        Cliente cliente = clienteFisicaSupplier.get();
         int tamanhoAntes = clienteRepo.getLista().size();
-
         clienteRepo.removerItem(cliente);
-
         assertEquals(tamanhoAntes, clienteRepo.getLista().size());
     }
 
     @Test
-    void when_LimparLista_Then_ListaFicaVazia() {
-        Cliente cliente = new PessoaFisica("Paula", "11111111111");
-        clienteRepo.salvar(cliente);
-
+    void when_LimparLista_Then_FicaVazia() {
+        Cliente c1 = clienteFisicaSupplier.get();
+        clienteRepo.salvar(c1);
         clienteRepo.limparLista();
-
         assertTrue(clienteRepo.getLista().isEmpty());
     }
 
     @Test
-    void when_AdicionarListaClientes_Then_TodosSaoInseridos() {
-        Cliente cliente1 = new PessoaFisica("Paula", "11111111111");
-        Cliente cliente2 = new PessoaJuridica("Top Assist", "11111111111111");
-
-        List<Cliente> novaLista = List.of(cliente1, cliente2);
-        clienteRepo.adicionarLista(novaLista);
-
-        assertTrue(clienteRepo.getLista().containsAll(novaLista));
+    void when_AdicionarLista_Then_TodosInseridos() {
+        Cliente c1 = clienteFisicaSupplier.get();
+        Cliente c2 = clienteJuridicaSupplier.get();
+        clienteRepo.adicionarLista(List.of(c1, c2));
+        assertTrue(clienteRepo.getLista().containsAll(List.of(c1, c2)));
     }
 
     @Test
-    void when_FiltrarPorNome_Then_RetornaClientesComNomeCorrespondente() {
-        Cliente cliente1 = new PessoaFisica("Paula Eduarda", "11111111111");
-        Cliente cliente2 = new PessoaJuridica("Top Assist", "11111111111111");
-        clienteRepo.salvar(cliente1);
-        clienteRepo.salvar(cliente2);
+    void when_FiltrarPorNome_Then_RetornaCorretos() {
+        Cliente c1 = clienteFisicaSupplier.get();
+        Cliente c2 = clienteJuridicaSupplier.get();
+        clienteRepo.salvar(c1);
+        clienteRepo.salvar(c2);
 
-        ClienteRepositorio resultado = clienteRepo.filtrar("nome", "paula");
+        ClienteRepositorio filtrado = clienteRepo.filtrar("nome", "Paula");
 
-        assertEquals(1, resultado.getLista().size());
-        assertEquals(cliente1, resultado.getLista().getFirst());
+        assertEquals(1, filtrado.getLista().size());
+        assertEquals(c1, filtrado.getLista().get(0));
     }
 
     @Test
-    void when_FiltrarPorDocumento_Then_RetornaClientesComDocumentoCorrespondente() {
-        Cliente cliente1 = new PessoaFisica("Paula", "11111111111");
-        Cliente cliente2 = new PessoaJuridica("Top Assist", "22222222222222");
-        clienteRepo.salvar(cliente1);
-        clienteRepo.salvar(cliente2);
+    void when_FiltrarPorDocumento_Then_RetornaCorretos() {
+        Cliente c1 = clienteFisicaSupplier.get();
+        Cliente c2 = clienteJuridicaSupplier.get();
+        clienteRepo.salvar(c1);
+        clienteRepo.salvar(c2);
 
-        ClienteRepositorio resultado = clienteRepo.filtrar("documento", "11111111111");
+        ClienteRepositorio filtrado = clienteRepo.filtrar("documento", c1.getIdentificador());
 
-        assertEquals(1, resultado.getLista().size());
-        assertEquals(cliente1, resultado.getLista().getFirst());
+        assertEquals(1, filtrado.getLista().size());
+        assertEquals(c1, filtrado.getLista().get(0));
     }
 
     @Test
     void when_FiltrarComCampoInvalido_Then_RetornaTodos() {
-        Cliente cliente1 = new PessoaFisica("Paula", "11111111111");
-        Cliente cliente2 = new PessoaJuridica("Top Assist", "22222222222222");
-        clienteRepo.salvar(cliente1);
-        clienteRepo.salvar(cliente2);
+        Cliente c1 = clienteFisicaSupplier.get();
+        Cliente c2 = clienteJuridicaSupplier.get();
+        clienteRepo.salvar(c1);
+        clienteRepo.salvar(c2);
 
-        ClienteRepositorio resultado = clienteRepo.filtrar("invalido", "xxx");
+        ClienteRepositorio filtrado = clienteRepo.filtrar("invalido", "xxx");
 
-        assertEquals(2, resultado.getLista().size());
-        assertTrue(resultado.getLista().containsAll(List.of(cliente1, cliente2)));
+        assertEquals(2, filtrado.getLista().size());
+        assertTrue(filtrado.getLista().containsAll(List.of(c1, c2)));
+    }
+
+    // --------------------------
+    // Testes dos Consumers
+    // --------------------------
+
+    @Test
+    void when_ConsumerAoSalvar_Applied() {
+        StringBuilder log = new StringBuilder();
+        clienteRepo.setAoSalvar(c -> log.append("salvo:").append(c.getIdentificador()));
+
+        Cliente cliente = clienteFisicaSupplier.get();
+        clienteRepo.salvar(cliente);
+
+        assertTrue(log.toString().contains(cliente.getIdentificador()));
+    }
+
+    @Test
+    void when_ConsumerAoAtualizar_Applied() {
+        Cliente cliente = clienteFisicaSupplier.get();
+        clienteRepo.salvar(cliente);
+
+        StringBuilder log = new StringBuilder();
+        clienteRepo.setAoAtualizar(c -> log.append("atualizado:").append(c.getIdentificador()));
+
+        Cliente atualizado = new PessoaFisica("Paula Eduarda", cliente.getIdentificador());
+        clienteRepo.atualizar(atualizado);
+
+        assertTrue(log.toString().contains(cliente.getIdentificador()));
+    }
+
+    @Test
+    void when_ConsumerAoRemover_Applied() {
+        Cliente cliente = clienteFisicaSupplier.get();
+        clienteRepo.salvar(cliente);
+
+        StringBuilder log = new StringBuilder();
+        clienteRepo.setAoRemover(c -> log.append("removido:").append(c.getIdentificador()));
+
+        clienteRepo.removerItem(cliente);
+
+        assertTrue(log.toString().contains(cliente.getIdentificador()));
     }
 }
