@@ -61,7 +61,10 @@ Projeto refatorado para aplicar conceitos de **Java Funcional**, incluindo Strea
    - **Function**: cálculo de valor de aluguel e criação de novos objetos (Veículo).
    - **Predicate**: validação de CPF, CNPJ e placas.
    - **Consumer**: logs formatados de cadastro, busca, devolução e remoção.
-   - **Supplier**: geração de dados de teste nos testes unitários.
+
+3. **Testes Unitários**
+   - Supplier: utilizado para gerar instâncias de objetos de forma padronizada e reutilizável nos testes (Cliente, Veículo, Aluguel).
+   - Consumer: utilizado para validar execuções de ações como salvar, atualizar e remover, simulando logs e callbacks centralizados.
 
 ---
 
@@ -72,6 +75,9 @@ Projeto refatorado para aplicar conceitos de **Java Funcional**, incluindo Strea
 - Testes unitários mais **padronizados**, utilizando **Supplier** e mocks consistentes.
 - Preparação para **futuras implementações de Streams e paginação**.
 - Logs e mensagens de operação centralizados via `Consumer`.
+- Maior padronização e legibilidade dos testes.
+- Redução de código duplicado nos testes.
+- Facilidade em validar efeitos colaterais (ex.: logs e callbacks) de forma isolada.
 
 ---
   
