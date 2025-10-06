@@ -12,6 +12,7 @@ import repository.AluguelRepositorio;
 import repository.ClienteRepositorio;
 import repository.VeiculoRepositorio;
 import servicos.AluguelServiceImpl;
+import utils.ValidationPredicates;
 
 public class DevolveVeiculo extends AbstractGridMenu {
     private final AluguelRepositorio aluguelRepositorio;
@@ -40,7 +41,7 @@ public class DevolveVeiculo extends AbstractGridMenu {
         grid.add(buttonDevolver, 1, 1);
 
         ChangeListener<String> ativaBotao = (obs, oldText, newText) -> {
-            buttonDevolver.setDisable(!Validations.documentoValido(newText));
+            buttonDevolver.setDisable(!ValidationPredicates.ehDocumentoValido(newText));
         };
         entryCliente.textProperty().addListener(ativaBotao);
 

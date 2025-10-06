@@ -1,14 +1,13 @@
 package view;
 
 import javafx.beans.value.ChangeListener;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import model.Cliente;
 import repository.ClienteRepositorio;
 
 import servicos.ClienteServiceImpl;
+import utils.ValidationPredicates;
 
 public class CadastroCliente extends AbstractGridMenu{
     private final ClienteServiceImpl clienteService;
@@ -52,10 +51,10 @@ public class CadastroCliente extends AbstractGridMenu{
         grid.add(buttonCadastrar, 1, 3);
 
         ChangeListener<String> changeListener = (obs, old, neu) -> {
-            boolean nomeValido = Validations.nomeValido(entryNome.getText());
-            boolean docValido = Validations.documentoValido(entryDoc.getText());
-            boolean docCpf = comboClienteTipo.getValue().contains("Física") && Validations.cpfValido(entryDoc.getText());
-            boolean docCnpj = comboClienteTipo.getValue().contains("Jurídica") && Validations.cnpjValido(entryDoc.getText());
+            boolean nomeValido = ValidationPredicates.ehNomeValido(entryNome.getText());
+            boolean docValido = ValidationPredicates.ehDocumentoValido(entryDoc.getText());
+            boolean docCpf = comboClienteTipo.getValue().contains("Física") && ValidationPredicates.ehCpfValido(entryDoc.getText());
+            boolean docCnpj = comboClienteTipo.getValue().contains("Jurídica") && ValidationPredicates.ehCnpjValido(entryDoc.getText());
             docValido = docValido && (docCpf || docCnpj);
             buttonCadastrar.setDisable(!nomeValido || !docValido);
         };
@@ -85,6 +84,4 @@ public class CadastroCliente extends AbstractGridMenu{
 
         });
     }
-
-
 }

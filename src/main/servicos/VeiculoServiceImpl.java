@@ -3,20 +3,16 @@ package servicos;
 import model.TipoVeiculo;
 import model.Veiculo;
 import repository.VeiculoRepositorio;
-import utils.Validator;
+import utils.ValidationPredicates;
 
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class VeiculoServiceImpl implements VeiculoService {
 
     private final VeiculoRepositorio veiculoRepositorio;
-
-    // Predicate para validaçao de placa
-    private final Predicate<String> placaValida = Validator::validarPlaca;
 
     // Function para criaçao de veículo
     private final Function<String[], Veiculo> criarVeiculo = args ->
@@ -51,7 +47,7 @@ public class VeiculoServiceImpl implements VeiculoService {
 
     @Override
     public void cadastrarVeiculo(String placa, TipoVeiculo tipo, String modelo) {
-        if (!placaValida.test(placa)) {
+        if (!ValidationPredicates.ehPlacaValida(placa)) {
             throw new IllegalArgumentException("Placa inválida");
         }
 
