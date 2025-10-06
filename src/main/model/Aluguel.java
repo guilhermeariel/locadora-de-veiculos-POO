@@ -3,73 +3,72 @@ package model;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class Aluguel implements Serializable {
-  private static int proximoId = 1;  // ID global incremental
-  private final int id;              // ID único do aluguel
 
-  private Cliente cliente;
-  private Veiculo veiculo;
-  private LocalDateTime dataInicio;
-  private LocalDateTime dataFim;
+    private static final Supplier<Integer> idGenerator = new Supplier<>() {
+        private int proximoId = 1;
+        @Override public Integer get() { return proximoId++; }
+    };
 
-  private DescontoStrategy descontoStrategy = new DescontoPorTipoCliente();
+    public static final Function<Aluguel, Long> calcularDias = aluguel -> {
+        long dias = Duration.between(aluguel.getDataInicio(), aluguel.getDataFim()).toDays();
+        return (Duration.between(aluguel.getDataInicio(), aluguel.getDataFim()).toHours() % 24 > 0) ? dias + 1 : dias;
+    };
 
-  public Aluguel(Cliente cliente, Veiculo veiculo, LocalDateTime dataInicio, LocalDateTime dataFim) {
-    this.id = proximoId++;
-    this.cliente = cliente;
-    this.veiculo = veiculo;
-    this.dataInicio = dataInicio;
-    this.dataFim = dataFim;
-  }
+    private final int id;
+    private Cliente cliente;
+    private Veiculo veiculo;
+    private LocalDateTime dataInicio;
+    private LocalDateTime dataFim;
+    private DescontoStrategy descontoStrategy = new DescontoPorTipoCliente();
 
-  public double calcularValor() {
-    long dias = Duration.between(dataInicio, dataFim).toDays();
-    if (Duration.between(dataInicio, dataFim).toHours() % 24 > 0) dias++;
+    public Aluguel(Cliente cliente, Veiculo veiculo, LocalDateTime dataInicio, LocalDateTime dataFim) {
+        this.id = idGenerator.get();
+        this.cliente = cliente;
+        this.veiculo = veiculo;
+        this.dataInicio = dataInicio;
+        this.dataFim = dataFim;
+    }
 
-    double total = dias * veiculo.getTipo().getValorDiaria();
-    return descontoStrategy.aplicarDesconto(cliente, dias, total);
-  }
+    public double calcularValor() {
+        long dias = calcularDias.apply(this);
+        double total = dias * veiculo.getTipo().getValorDiaria();
+        return descontoStrategy.aplicarDesconto(cliente, dias, total);
+    }
 
-  public int getIdentificador() {
-    return id;
-  }
+    public int getIdentificador() {
+        return id;
+    }
 
-  public Cliente getCliente() {
-    return cliente;
-  }
+    public Cliente getCliente() {
+        return cliente;
+    }
 
-  public Veiculo getVeiculo() {
-    return veiculo;
-  }
+    public Veiculo getVeiculo() {
+        return veiculo;
+    }
 
-  public LocalDateTime getDataInicio() {
-    return dataInicio;
-  }
+    public LocalDateTime getDataInicio() {
+        return dataInicio;
+    }
 
-  public void setDataInicio(LocalDateTime dataInicio) {
-    this.dataInicio = dataInicio;
-  }
+    public LocalDateTime getDataFim() {
+        return dataFim;
+    }
 
-  public LocalDateTime getDataFim() {
-    return dataFim;
-  }
+    public void setDataFim(LocalDateTime dataFim) {
+        this.dataFim = dataFim;
+    }
 
-  public void setDataFim(LocalDateTime dataFim) {
-    this.dataFim = dataFim;
-  }
-
-  // Metodo alternativo com nome mais semântico
-  public LocalDateTime getDataDevolucao() {
-    return dataFim;
-  }
-
-  // (Opcional) Para facilitar prints e debug
-  @Override
-  public String toString() {
-    return "Aluguel ID: " + id + ", Cliente: " + cliente.getNome()
-        + ", Veículo: " + veiculo.getModelo()
-        + ", Início: " + dataInicio
-        + ", Fim: " + dataFim;
-  }
+    // (Opcional) Para facilitar prints e debug
+    @Override
+    public String toString() {
+        return "Aluguel ID: " + id + ", Cliente: " + cliente.getNome()
+                + ", Veículo: " + veiculo.getModelo()
+                + ", Início: " + dataInicio
+                + ", Fim: " + dataFim;
+    }
 }
