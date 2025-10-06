@@ -6,6 +6,7 @@ import model.TipoVeiculo;
 import model.Veiculo;
 import repository.VeiculoRepositorio;
 import servicos.VeiculoServiceImpl;
+import utils.ValidationPredicates;
 
 public class CadastroVeiculo extends AbstractGridMenu{
     private TipoVeiculo tipo;
@@ -38,7 +39,7 @@ public class CadastroVeiculo extends AbstractGridMenu{
         grid.add(buttonCadastrar, 1, 3);
 
         ChangeListener<String> changeListener = (obs, old, neu) -> {
-            boolean placaValida = Validations.placaValida(entryPlaca.getText());
+            boolean placaValida = ValidationPredicates.ehPlacaValida(entryPlaca.getText());
             boolean modeloValido = entryModelo.getText() != null && !entryModelo.getText().trim().isEmpty();
             buttonCadastrar.setDisable(!(placaValida && modeloValido));
         };

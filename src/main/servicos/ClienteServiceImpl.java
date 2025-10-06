@@ -4,11 +4,10 @@ import model.Cliente;
 import model.PessoaFisica;
 import model.PessoaJuridica;
 import repository.ClienteRepositorio;
-import utils.Validator;
+import utils.ValidationPredicates;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class ClienteServiceImpl implements ClienteService {
 
@@ -47,15 +46,11 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     private Cliente getCliente(String nome, String documento, boolean isPessoaFisica) {
-        // Predicates para validação
-        Predicate<String> nomeValido = Validator::validarNome;
-        Predicate<String> documentoValido = isPessoaFisica ? Validator::validarCPF : Validator::validarCNPJ;
-
-        if (!nomeValido.test(nome)) {
+        if (!ValidationPredicates.ehNomeValido(nome)) {
             throw new IllegalArgumentException("Nome inválido.");
         }
 
-        if (!documentoValido.test(documento)) {
+        if (!ValidationPredicates.ehDocumentoValido(documento)) {
             throw new IllegalArgumentException(isPessoaFisica ? "CPF inválido." : "CNPJ inválido.");
         }
 
@@ -81,8 +76,7 @@ public class ClienteServiceImpl implements ClienteService {
     public void atualizarCliente(String documento, String novoNome) {
         Cliente cliente = buscarClientePorId(documento);
 
-        Predicate<String> nomeValido = Validator::validarNome;
-        if (!nomeValido.test(novoNome)) throw new IllegalArgumentException("Nome inválido.");
+        if (!ValidationPredicates.ehNomeValido(novoNome)) throw new IllegalArgumentException("Nome inválido.");
 
         cliente.setNome(novoNome);
         clienteRepositorio.atualizar(cliente);

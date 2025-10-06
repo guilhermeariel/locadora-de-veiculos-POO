@@ -11,6 +11,7 @@ import repository.VeiculoRepositorio;
 
 import javafx.beans.value.ChangeListener;
 import servicos.AluguelServiceImpl;
+import utils.ValidationPredicates;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -85,7 +86,7 @@ public class AlugaVeiculo extends AbstractGridMenu{
         };
 
         ChangeListener<String> ativaBotao = (obs, oldText, newText) -> {
-            boolean clienteValido = Validations.documentoValido(entryCliente.getText()) &&
+            boolean clienteValido = ValidationPredicates.ehDocumentoValido(entryCliente.getText()) &&
                                    clienteRepositorio.buscarPorIdentificador(entryCliente.getText()) != null;
             boolean veiculoSelecionado = !entryVeiculo.getText().isEmpty();
             boolean diariasValidas = !entryDiarias.getText().isEmpty() && Integer.parseInt(entryDiarias.getText()) > 0;
@@ -149,8 +150,8 @@ public class AlugaVeiculo extends AbstractGridMenu{
         String dataFim = fim.getText();
         String hInicio = horaInicio.getText();
         String hFim = horaFim.getText();
-        if (Validations.dataValida(dataInicio) && Validations.dataValida(dataFim) &&
-            Validations.horaValida(hInicio) && Validations.horaValida(hFim)) {
+        if (ValidationPredicates.ehDataValida(dataInicio) && ValidationPredicates.ehDataValida(dataFim) &&
+                ValidationPredicates.ehHoraValida(hInicio) && ValidationPredicates.ehHoraValida(hFim)) {
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             LocalDate inicioDate = LocalDate.parse(dataInicio, formatter);
