@@ -44,14 +44,16 @@ public class Interface extends Application {
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
         MenuItem abrirItem = new MenuItem("Abrir");
+        MenuItem abrirTeste = new MenuItem("Abrir Teste");
         MenuItem salvarItem = new MenuItem("Salvar");
         MenuItem sairItem = new MenuItem("Sair");
-        fileMenu.getItems().addAll(abrirItem, salvarItem, sairItem);
+        fileMenu.getItems().addAll(abrirItem, abrirTeste, salvarItem, sairItem);
         menuBar.getMenus().add(fileMenu);
         root.getChildren().add(menuBar);
 
         sairItem.setOnAction(e -> stage.close());
         abrirItem.setOnAction(e -> gerenciadorDados.carregarDados("dados"));
+        abrirTeste.setOnAction(e -> gerenciadorDados.carregarDados("dados_teste"));
         salvarItem.setOnAction(e -> gerenciadorDados.salvarDados("dados"));
 
         // Configuração da Cena
