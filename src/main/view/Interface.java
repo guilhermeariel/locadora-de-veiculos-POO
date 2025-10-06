@@ -51,10 +51,18 @@ public class Interface extends Application {
         menuBar.getMenus().add(fileMenu);
         root.getChildren().add(menuBar);
 
-        sairItem.setOnAction(e -> stage.close());
-        abrirItem.setOnAction(e -> gerenciadorDados.carregarDados("dados"));
-        abrirTeste.setOnAction(e -> gerenciadorDados.carregarDados("dados_teste"));
-        salvarItem.setOnAction(e -> gerenciadorDados.salvarDados("dados"));
+        sairItem.setOnAction(_ -> stage.close());
+        abrirItem.setOnAction(_ -> {
+            gerenciadorDados.carregarDados("dados");
+            buscaVeiculo.update();
+            buscaCliente.update();
+        });
+        abrirTeste.setOnAction(_ -> {
+            gerenciadorDados.carregarDados("dados_teste");
+            buscaVeiculo.update();
+            buscaCliente.update();
+        });
+        salvarItem.setOnAction(_ -> gerenciadorDados.salvarDados("dados"));
 
         // Configuração da Cena
         Scene scene = new Scene(root, 300, 400);
@@ -71,7 +79,7 @@ public class Interface extends Application {
 
         root.getChildren().add(cadastroCliente.getGrid());
 
-        comboMenu.setOnAction(e -> {
+        comboMenu.setOnAction(_ -> {
             String opcao = comboMenu.getValue();
             mudaForm(opcao);
         });
@@ -92,6 +100,7 @@ public class Interface extends Application {
             System.out.println("Cadastrar Veículo");
         }
         if (opcao.equals("Buscar Veículo")) {
+            buscaVeiculo.update();
             root.getChildren().add(buscaVeiculo.getGrid());
             System.out.println("Buscar Veículo");
         }

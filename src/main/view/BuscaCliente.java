@@ -37,11 +37,10 @@ public class BuscaCliente extends AbstractGridMenu{
         pagination = new Pagination();
 
         pagination.setPageCount(1);
-
-        // Atualiza tabela quando muda a página
-        pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> {
-            atualizarPagina(listaCliente, newIndex.intValue() + 1);
-        });
+        pagination.currentPageIndexProperty().addListener((_,
+                                                           _,
+                                                           newIndex) ->
+                atualizarPagina(listaCliente, newIndex.intValue() + 1));
 
         listaCliente.getSelectionModel().select(0);
         BorderPane listaPane = new BorderPane(listaCliente, null, null, pagination, null);
@@ -62,7 +61,7 @@ public class BuscaCliente extends AbstractGridMenu{
         grid.add(buttonEditar, 0, 6);
         grid.add(buttonRemover, 1, 6);
 
-        buttonFiltrar.setOnAction(e -> {
+        buttonFiltrar.setOnAction(_ -> {
             String filtro = comboFiltro.getValue();
             String valor = entryFiltro.getText().trim().toLowerCase();
             List<Cliente> clientesFiltrados = repositorio.filtrar(filtro, valor).getLista();
@@ -73,7 +72,7 @@ public class BuscaCliente extends AbstractGridMenu{
             }
         });
 
-        buttonRemover.setOnAction(e -> {
+        buttonRemover.setOnAction(_ -> {
             Cliente clienteSelecionado = listaCliente.getSelectionModel().getSelectedItem();
             if (clienteSelecionado != null) {
                 clienteService.removerCliente(clienteSelecionado.getIdentificador());
@@ -81,7 +80,7 @@ public class BuscaCliente extends AbstractGridMenu{
             }
         });
 
-        buttonEditar.setOnAction(e-> {
+        buttonEditar.setOnAction(_-> {
             Cliente clienteSelecionado = listaCliente.getSelectionModel().getSelectedItem();
             if (clienteSelecionado != null) {
                 atualizador.setCliente(clienteSelecionado);
