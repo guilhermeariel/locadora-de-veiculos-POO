@@ -56,11 +56,11 @@ Projeto refatorado para aplicar conceitos de **Java Funcional**, incluindo Strea
 
 1. **Streams**
    - Filtragem de veículos alugados e aluguéis ativos usando `.stream().filter()`.
-   - Paginação preparada com `skip()` e `limit()` (planejado para próximas implementações).
+   - Paginação preparada com `skip()` e `limit()`.
 
 2. **Interfaces Funcionais**
    - **Function**: cálculo de valor de aluguel e criação de novos objetos (Veículo).
-   - **Predicate**: validação de CPF, CNPJ e placas.
+   - **Predicate**: validação de CPF, CNPJ, nomes e placas.
    - **Consumer**: logs formatados de cadastro, busca, devolução e remoção.
 
 3. **Testes Unitários**
