@@ -13,7 +13,8 @@ Projeto desenvolvido para aplicar os conceitos fundamentais de **Programação O
 - Cálculo de valor com base em **tipo de veículo** e **dias alugados**
 - Aplicação automática de **descontos por perfil de cliente**
 - Paginação nas listagens (bônus)
-- Projeto preparado para gravação futura em arquivo (opcional)
+- Gravação em arquivo (bônus)
+- Interface gráfica com JavaFX
 
 ---
 
@@ -21,8 +22,8 @@ Projeto desenvolvido para aplicar os conceitos fundamentais de **Programação O
 
 - 🚫 Não permite duplicidade de **placas** ou **CPF/CNPJ**
 - 🚘 Tipos de veículos:
-  - PEQUENO → R$ 100/dia
-  - MÉDIO → R$ 150/dia
+  - HATCH → R$ 100/dia
+  - SEDAN → R$ 150/dia
   - SUV → R$ 200/dia
 - 🕓 Aluguel com hora fracionada é contado como diária cheia
 - 💸 Descontos:
@@ -63,7 +64,6 @@ Projeto refatorado para aplicar conceitos de **Java Funcional**, incluindo Strea
    - **Consumer**: logs formatados de cadastro, busca, devolução e remoção.
 
 3. **Testes Unitários**
-   - Supplier: utilizado para gerar instâncias de objetos de forma padronizada e reutilizável nos testes (Cliente, Veículo, Aluguel).
    - Consumer: utilizado para validar execuções de ações como salvar, atualizar e remover, simulando logs e callbacks centralizados.
 
 4. **Paginaçao e Ordenaçao**
@@ -73,7 +73,10 @@ Projeto refatorado para aplicar conceitos de **Java Funcional**, incluindo Strea
      - buscarClientesPaginadosEOrdenados(int pagina, int tamanhoPagina, boolean ascendente)
      - buscarVeiculosPaginadosEOrdenados(int pagina, int tamanhoPagina, boolean ascendente)
      - buscarAlugueisPaginadosEOrdenados(int pagina, int tamanhoPagina, boolean ascendente)
+   - Uso de paginação em interface gráfica usando FX
 
+5. **Gerador de dados de teste**
+   - Supplier: Utilizado para gerar uma série de dados para poder visualizar o funcionamento da interface;
 ---
 
 ## Principais melhorias percebidas
@@ -91,7 +94,8 @@ Projeto refatorado para aplicar conceitos de **Java Funcional**, incluindo Strea
   
 ## Dificuldades enfrentadas
 
-- Decidir **quando criar Supplier**.
 - Adaptar métodos existentes para o padrão funcional sem quebrar a lógica de negócio.
-- Pensar numa paginaçao genérica e reutilizável.
+- Implementar o uso de Predicate, Function, Consumer e Supplier, mantendo os mesmos nomes e funcionamentos das funções 
+existentes.
+- Pensar em uma paginação genérica e reutilizável, que pudesse ser aplicada também para a interface gráfica.
 
