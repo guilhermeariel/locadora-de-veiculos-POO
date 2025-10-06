@@ -1,5 +1,6 @@
 package utils;
 
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 public class Validator {
@@ -10,31 +11,30 @@ public class Validator {
     private static final Pattern NOME_REGEX = Pattern.compile("[A-Za-zÀ-ÿ ]+");
     private static final Pattern PLACA_REGEX = Pattern.compile("^[A-Z]{3}-?\\d{4}$|^[A-Z]{3}\\d[A-Z]\\d{2}$");
 
-    public static boolean validarNome(String nome) {
-        if (nome == null) return false;
-        String trimmed = nome.trim();
-        return !trimmed.isEmpty() && NOME_REGEX.matcher(trimmed).matches();
-    }
+    public static final Predicate<String> NOME_VALIDO = nome ->
+            nome != null && !nome.trim().isEmpty() && NOME_REGEX.matcher(nome.trim()).matches();
 
-    // ==================== CPF/CNPJ ====================
-    private static boolean validarNumeros(String input, int tamanhoEsperado) {
-        if (input == null) return false;
-        String numeros = input.replaceAll("\\D", ""); // remove tudo que não é dígito
-        return numeros.length() == tamanhoEsperado;
-    }
+    public static final Predicate<String> CPF_VALIDO = cpf -> {
+        if (cpf == null) return false;
+        String numeros = cpf.trim().replaceAll("\\D", "");
+        return numeros.length() == 11;
+    };
 
-    public static boolean validarCPF(String cpf) {
-        return validarNumeros(cpf, 11);
-    }
+    public static final Predicate<String> CNPJ_VALIDO = cnpj -> {
+        if (cnpj == null) return false;
+        String numeros = cnpj.trim().replaceAll("\\D", "");
+        return numeros.length() == 14;
+    };
 
-    public static boolean validarCNPJ(String cnpj) {
-        return validarNumeros(cnpj, 14);
-    }
+    public static final Predicate<String> PLACA_VALIDA = placa ->
+            placa != null && PLACA_REGEX.matcher(placa.trim().toUpperCase()).matches();
 
-    // ==================== Placa de Veículo ====================
-    public static boolean validarPlaca(String placa) {
-        if (placa == null) return false;
-        String normalizada = placa.trim().toUpperCase();
-        return PLACA_REGEX.matcher(normalizada).matches();
-    }
+    // ================== Validadores ==================
+    public static boolean validarNome(String nome) {return NOME_VALIDO.test(nome);}
+
+    public static boolean validarCPF(String cpf) {return CPF_VALIDO.test(cpf);}
+
+    public static boolean validarCNPJ(String cnpj){return CNPJ_VALIDO.test(cnpj);}
+
+    public static boolean validarPlaca(String placa) {return PLACA_VALIDA.test(placa);}
 }
