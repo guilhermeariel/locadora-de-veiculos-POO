@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GerenciadorDados {
     private final ClienteRepositorio clienteRepositorio;
@@ -37,17 +38,17 @@ public class GerenciadorDados {
 
     public void carregarDados(String fileName) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
-            ArrayList<Cliente> clientes = (ArrayList<Cliente>) ois.readObject();
-            ArrayList<Veiculo> veiculos = (ArrayList<Veiculo>) ois.readObject();
-            ArrayList<Aluguel> alugueis = (ArrayList<Aluguel>) ois.readObject();
+            List<Cliente> clientes = (List<Cliente>) ois.readObject();
+            List<Veiculo> veiculos = (List<Veiculo>) ois.readObject();
+            List<Aluguel> alugueis = (List<Aluguel>) ois.readObject();
 
             clienteRepositorio.limparLista();
             veiculoRepositorio.limparLista();
             aluguelRepositorio.limparLista();
 
-            clienteRepositorio.adicionarLista(clientes);
-            veiculoRepositorio.adicionarLista(veiculos);
-            aluguelRepositorio.adicionarLista(alugueis);
+            clienteRepositorio.adicionarLista(new ArrayList<>(clientes));
+            veiculoRepositorio.adicionarLista(new ArrayList<>(veiculos));
+            aluguelRepositorio.adicionarLista(new ArrayList<>(alugueis));
 
             System.out.println("Dados carregados com sucesso de " + fileName);
         } catch (Exception e) {
