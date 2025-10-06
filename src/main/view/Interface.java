@@ -94,6 +94,7 @@ public class Interface extends Application {
             System.out.println("Buscar Veículo");
         }
         if (opcao.equals("Buscar Cliente")) {
+            buscaCliente.update();
             root.getChildren().add(buscaCliente.getGrid());
             System.out.println("Buscar Cliente");
         }
