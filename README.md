@@ -84,7 +84,6 @@ Projeto refatorado para aplicar conceitos de **Java Funcional**, incluindo Strea
 - Código mais **limpo e conciso** com operações funcionais.
 - Maior **reutilização de lógica**, evitando duplicação de validações e logs.
 - Testes unitários mais **padronizados**, utilizando **Supplier** e mocks consistentes.
-- Preparação para **futuras implementações de Streams e paginação**.
 - Logs e mensagens de operação centralizados via `Consumer`.
 - Maior padronização e legibilidade dos testes.
 - Redução de código duplicado nos testes.
